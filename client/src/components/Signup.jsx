@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 const Signup = () => {
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
@@ -35,7 +36,8 @@ const Signup = () => {
 
       if (data.message === "Compte créé avec succès") {
         // Compte créé, redirection vers la page de connexion
-        navigate("/login");
+        navigate("/");
+        localStorage.setItem("pseudo", data.user.pseudo);
       } else {
         setError(data.message || "Erreur lors de la création du compte");
       }
@@ -44,6 +46,22 @@ const Signup = () => {
       setError("Erreur lors de la création du compte, veuillez réessayer.");
     }
   };
+
+
+
+
+   
+   
+
+    
+    
+    
+
+
+
+
+
+
 
   return (
     <div className="signup-container">

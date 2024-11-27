@@ -11,7 +11,7 @@ import "../public/assets/styles/CV.scss"
 import "../public/assets/styles/Article.scss";
 import "../public/assets/styles/contact.scss"
 import "../public/assets/styles/login.scss"
-
+import "../public/assets/styles/signup.scss"
 
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
