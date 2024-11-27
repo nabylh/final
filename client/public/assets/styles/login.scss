@@ -1,0 +1,67 @@
+.icon-login {
+    width: 20px;
+}
+
+.pseudo-log {
+  font-family: "Roboto";
+  font-size: large;
+  color: #1a1d1b;
+  font-style: italic;
+  margin: 20px;
+  
+}
+.login-container {
+    text-align: center;
+    padding: 100px;
+  
+    .login-form {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 40px;
+      margin: 0 auto;
+      width: 300px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+      h2 {
+        margin-bottom: 15px;
+           font-family: "Roboto", sans-serif;
+    font-size: x-large;
+      }
+  
+      .form-group {
+        margin-bottom: 15px;
+  
+        label {
+          display: block;
+          font-weight: bold;
+          margin-bottom: 5px;
+          font-family: "Roboto", sans-serif;
+          font-size: larger;
+        }
+  
+        input {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          font-size: 14px;
+        }
+      }
+  
+      .submit-button {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+  
+        &:hover {
+          background-color: #218838;
+        }
+      }
+    }
+  }
+  

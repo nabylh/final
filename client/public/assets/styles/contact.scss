@@ -1,0 +1,106 @@
+/* Conteneur principal */
+.contact__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    min-height: 100vh;
+    background-color: #969494; /* Exemple de fond */
+   
+    
+  }
+  
+  /* Formulaire */
+  .contact__form {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    
+    padding: 5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: "Roboto", sans-serif;
+    font-size: larger;
+  }
+  
+  /* Autres styles inchangés */
+  .form__group  {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    font-family: "Roboto", sans-serif;
+    font-size: larger;
+  }
+  
+  .form__label {
+    
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .form__input,
+  .form__textarea {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-family: "Roboto", sans-serif;
+    font-size: larger;
+
+  }
+  
+  .form__input:focus,
+  .form__textarea:focus {
+    border-color: #0078d4;
+  }
+  
+  .form__textarea {
+   height: 15rem;
+    resize: none;
+    font-family: "Roboto", sans-serif;
+    font-size: larger;
+  }
+  
+  .form__button {
+    padding: 0.75rem ;
+    width: 104%;
+    margin: auto;
+    
+    background-color: #0078d4;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: "Roboto", sans-serif;
+    font-size: larger;
+  }
+  
+  .form__button:hover {
+    background-color: #043c74;
+  }
+  
+  .form__error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-family: "Roboto", sans-serif;
+    font-size: larger;
+  }
+  
+  .form__success-message {
+    color: green;
+    font-size: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+    font-size: larger;
+  }
+  

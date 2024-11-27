@@ -1,0 +1,125 @@
+/* MAIN SECTION portfolio */
+
+
+article .listePortfolio {
+    display: flex;
+    
+    
+  }
+  
+   #portfolio {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  background-image: url('/assets/images/GreyGeometricalShapesBackground.webp'); 
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 80%;
+  height: 100vh; 
+  position: relative;
+  z-index: 0;  
+  box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
+  0 0  0 0.1em rgb(190, 190, 190),
+  0.3em 0.3em 1em rgba(0,0,0,0.3);
+  }
+  
+  .listePortfolio h2 {
+    display: flex;
+  flex-direction: column;
+  color: white;
+  display: flex;
+  width: 100%;
+  margin-top: 6rem;
+  margin-right: 4rem;
+  font-family: "Roboto", system-ui;
+  font-size: 6rem;
+  font-weight: 500;  
+  align-items: center;
+  
+  }
+  
+  .listePortfolio {
+    h2 {
+      svg {
+      padding: 1rem;
+      }
+    }
+  }
+  
+  .listePortfolio {
+    span {
+      display: inline-block;
+      flex-direction: column;
+      font-family: "Roboto", system-ui;
+      font-weight: 300;
+      font-style: italic;
+      font-size: large;
+      padding: 2rem;
+    }
+  } 
+  
+  
+  .text1 {
+    background-color: #575757;
+    box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
+  0 0  0 0.1em rgb(190, 190, 190),
+  0.3em 0.3em 1em rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  /* flex-direction: column; */
+  justify-content: center;
+    color: white;
+    width: 70%; 
+    margin: auto;
+    margin-top: 12em;
+    
+   /* margin-left: 2rem; */
+    font-family: "Roboto", system-ui;
+    font-weight: 400;
+    font-size: medium;
+    gap: 2em;
+   
+  }
+  
+  .text1 {
+    p {
+      width:50%;
+      padding: 2rem;
+    }
+  } 
+
+  
+  
+  
+  
+  /* .text2 {
+    background-color: #575757;
+    box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
+  0 0  0 0.1em rgb(190, 190, 190),
+  0.3em 0.3em 1em rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: row-reverse; */
+   /* flex-direction: column; */
+   /* justify-content: center;
+    align-items: center;
+    margin: auto; */
+    /* margin-top: 25rem; */
+    /* color: white;
+    width: 70%; 
+    font-family: "Roboto", system-ui;
+    font-weight: 400;
+    font-size: medium;
+    gap: 2em; */
+    /* }
+  
+  
+    .text1,.text2 {
+      p {
+        width:30%;
+      }
+    } */
+  
+  
+  
