@@ -1,0 +1,139 @@
+// Styles généraux
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    color: #343a40; // Dark gray
+    line-height: 1.6;
+  }
+  
+  .dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  
+    h1 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #343a40; // Dark gray
+    }
+  
+    p {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+      color: #e9ecef; // Medium gray
+    }
+  
+    // Sections principales
+    > div {
+      margin-bottom: 40px;
+      background-color: #ffffff; // White
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+        color: #007BFF; // Primary color
+      }
+  
+      button {
+        display: inline-block;
+        background-color: #e9ecef; // Medium gray
+        color: #343a40; // Dark gray
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Roboto', Arial, sans-serif;
+        font-size: 1.25rem;
+        cursor: pointer;
+        margin: 10px 5px;
+        transition: all 0.3s ease-in-out;
+  
+        &:hover {
+          background-color: #f8f9fa; // Light gray
+        }
+      }
+  
+      ul {
+        list-style: none;
+        padding: 0;
+  
+        li {
+          background-color: #e9ecef; // Medium gray
+          margin: 10px 0;
+          padding: 15px;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease-in-out;
+  
+          &:nth-child(even) {
+            background-color: #f8f9fa; // Light gray
+          }
+  
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+  
+          p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #343a40; // Dark gray
+  
+            strong {
+              color: #007BFF; // Primary color
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Composants spécifiques
+  .card {
+    background-color: #ffffff; // White
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  
+    h3 {
+      font-size: 1.5rem;
+      color: #007BFF; // Primary color
+      margin-bottom: 10px;
+    }
+  
+    p {
+      font-size: 1rem;
+      color: #343a40; // Dark gray
+    }
+  }
+  
+  .dashboard {
+    // Espacement général entre les sections
+    > div {
+      margin-top: 80px; // Ajoute de l'espace entre les sections
+    }
+  
+    // Autres styles de la section (inchangés)
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 15px; // Ajoute un espacement sous le titre
+      color: #007BFF; // Primary color
+    }
+  
+    button {
+      margin-top: 10px; // Ajoute de l'espace entre les boutons
+    }
+  
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px; // Ajoute un espace entre les boutons et la liste
+    }
+  }
+  
