@@ -14,7 +14,7 @@ const Articles = () => {
           throw new Error("Erreur lors de la récupération des catégories");
         }
         const data = await response.json();
-        console.log(data); // Vérifiez ici les données reçues
+       
         setCategories(data);
       } catch (error) {
         console.error("Erreur lors de la récupération des catégories :", error);

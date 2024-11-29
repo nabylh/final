@@ -1,12 +1,14 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Importer useNavigate pour la redirection
 
-const pseudo = localStorage.getItem("pseudo");
+
+
+
 
 function Header() {
   const navigate = useNavigate(); // Hook de navigation pour rediriger l'utilisateur après la déconnexion
 
-  
+  const pseudo = localStorage.getItem("pseudo");
     const handleLogout = async () => {
       // Supprimer le pseudo du localStorage
       localStorage.removeItem("pseudo");

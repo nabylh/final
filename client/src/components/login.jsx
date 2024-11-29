@@ -15,9 +15,9 @@ const Login = () => {
     try {
       // Utilisation de POST au lieu de GET pour l'authentification
       const response = await fetch("http://localhost:3000/login", {
-        method: "POST", // Changer GET en POST
+        method: "POST",
         headers: {
-          "Content-Type": "application/json", // Déclaration du type de contenu
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           identifier, // Envoie le pseudo ou l'email
@@ -30,9 +30,9 @@ const Login = () => {
       console.log(data);
 
       if (!response.ok) {
-        // Si le serveur renvoie une erreur 404 pour l'utilisateur non trouvé
         if (response.status === 404) {
           console.error("Utilisateur non trouvé");
+          setError("Utilisateur non trouvé. Veuillez créer un compte.");
           navigate("/signup"); // Redirige vers la page "Créer un compte"
           return;
         }
@@ -44,16 +44,21 @@ const Login = () => {
 
         // Stockage du pseudo dans le localStorage ou dans un état global
         localStorage.setItem("pseudo", data.user.pseudo);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
-        // Redirection vers la page principale
-        navigate("/"); // Redirection à la page principale
+        // Vérification du rôle et redirection vers la page appropriée
+        if (data.user.role === "admin") {
+          navigate("/dashboard"); // Redirection vers la page dashboard pour l'administrateur
+        } else {
+          navigate("/"); // Redirection vers la page principale pour les autres utilisateurs
+        }
       } else {
         setError(data.message || "Erreur de connexion");
       }
     } catch (err) {
       console.error("Erreur lors de la connexion", err);
       setError("Erreur lors de la connexion, veuillez réessayer.");
-      navigate("/signup"); // Redirige vers la page "Créer un compte"
+      navigate("/signup"); // Redirige vers la page "Créer un compte" en cas d'erreur
     }
   };
 

@@ -13,7 +13,7 @@ const Images = () => {
           throw new Error("Erreur lors de la récupération des images");
         }
         const data = await response.json();
-        console.log(data); // Vérifiez ici les données reçues
+        
         setImages(data);
       } catch (error) {
         console.error("Erreur lors de la récupération des images :", error);
