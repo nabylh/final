@@ -8,6 +8,7 @@ import { createRequire } from "module";
 import mysql from "mysql2"; // Importation du module mysql2
 import withAdminAuth from "./middlewares/withAdminAuth.js"; // Middleware pour l'authentification des admins
 
+
 const require = createRequire(import.meta.url);
 const MySQLStore = require("express-mysql-session")(session);
 
@@ -50,6 +51,8 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
+            path: "/",
+            sameSite: "strict",
             maxAge: 1000 * 60 * 60 * 24, // 24 heures
             httpOnly: true,
             secure: false,
@@ -94,18 +97,29 @@ app.post("/login", async (req, res) => {
 
 // Route pour la déconnexion
 app.post("/logout", (req, res) => {
-    if (req.session.user) {
+    if (req.session?.user) {
         req.session.destroy((err) => {
             if (err) {
-                return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+                console.error("Erreur lors de la destruction de la session :", err);
+                return res.status(500).json({ message: "Erreur serveur lors de la déconnexion" });
             }
-            res.clearCookie("connect.sid");
-            return res.json({ message: "Déconnexion réussie" });
+
+            // Effacer le cookie côté client
+            res.clearCookie("connect.sid", {
+                path: '/',           // S'assurer que le chemin est bien défini
+                httpOnly: true,      // Garantir que le cookie est inaccessible via JavaScript
+                secure: false,       // Passez à true en HTTPS
+                sameSite: 'strict',  // Empêche l'envoi du cookie vers d'autres sites
+            });
+            console.log("Session détruite avec succès.");
+            return res.status(200).json({ message: "Déconnexion réussie" });
         });
     } else {
-        return res.status(400).json({ message: "Aucune session active" });
+        // Si aucune session active
+        return res.status(400).json({ message: "Aucune session active à déconnecter" });
     }
 });
+
 
 // Middleware pour servir des fichiers statiques
 app.use("/images", express.static(path.join(process.cwd(), "public/images")));
@@ -153,6 +167,7 @@ app.post("/signup", async (req, res) => {
 
 // Route protégée accessible uniquement pour les administrateurs
 app.get("/dashboard", withAdminAuth, (req, res) => {
+    console.log("Accès à la route /dashboard autorisé, route atteinte avec succès.");
     res.json({ message: "Bienvenue sur le tableau de bord administrateur !" });
 });
 

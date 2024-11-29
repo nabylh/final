@@ -12,7 +12,13 @@ function Header() {
     const handleLogout = async () => {
       // Supprimer le pseudo du localStorage
       localStorage.removeItem("pseudo");
+      sessionStorage.clear();
   
+      document.cookie.split(';').forEach(cookie => {
+        const cookieName = cookie.split('=')[0].trim();
+        // Pour être sûr de supprimer le cookie, on réinitialise pour tous les chemins et domaines
+        document.cookie = `${cookieName}=; path=/; domain=${document.domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
+    });
       // Optionnellement, faites une requête pour détruire la session côté serveur
       try {
           await fetch("http://localhost:3000/logout", {
@@ -24,7 +30,7 @@ function Header() {
       }
   
       // Rediriger l'utilisateur vers la page de connexion
-      navigate("/login");
+      navigate("/");
   };
   
 

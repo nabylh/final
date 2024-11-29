@@ -8,7 +8,7 @@ import signupRoutes from './signup.routes.js';
 import userRoutes from './user.routes.js';
 import dashboardRoutes from "./dashboard.routes.js";
 import withAdminAuth from '../middlewares/withAdminAuth.js'; // Importation du middleware
-
+import logoutRoutes from  "./logout.routes.js";
 const router = express.Router();
 
 //  les routes principales de mon blog
@@ -19,6 +19,7 @@ router.use('/undercategory', undercategoryRoutes);
 router.use('/login', loginRoutes);
 router.use('/signup', signupRoutes);
 router.use('/user', userRoutes);
+router.use("/logout",logoutRoutes);
 
 // Application du middleware pour protéger la route /dashboard
 router.use('/dashboard', withAdminAuth, dashboardRoutes);

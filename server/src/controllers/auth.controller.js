@@ -27,19 +27,33 @@ const login = async (req, res) => {
 
 
 // Déconnexion utilisateur
+// controllers/auth.controller.js
+
 const logout = (req, res) => {
-    if (req.session.user) {
+    // Vérification si une session existe
+    if (req.session?.user) {
         req.session.destroy((err) => {
             if (err) {
-                return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+                console.error("Erreur lors de la destruction de la session :", err);
+                return res.status(500).json({ message: "Erreur serveur lors de la déconnexion" });
             }
-            res.clearCookie("connect.sid");
+
+            // Effacer le cookie côté client
+            res.clearCookie("connect.sid", {
+                path: '/',           // S'assurer que le chemin est bien défini
+                httpOnly: true,      // Garantir que le cookie est inaccessible via JavaScript
+                secure: false,       // Passez à true en HTTPS
+                sameSite: 'strict',  // Empêche l'envoi du cookie vers d'autres sites
+            });
+
             return res.status(200).json({ message: "Déconnexion réussie" });
         });
     } else {
-        return res.status(400).json({ message: "Aucune session active" });
+        // Si aucune session active
+        return res.status(400).json({ message: "Aucune session active à déconnecter" });
     }
 };
+
 
 // Inscription utilisateur
 const signup = async (req, res) => {
