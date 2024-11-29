@@ -1,5 +1,3 @@
-
-
 import "dotenv/config"; 
 import express from "express"; 
 import path from "path"; 
@@ -8,8 +6,10 @@ import session from "express-session";
 import bcrypt from "bcrypt";
 import { createRequire } from "module"; 
 import mysql from "mysql2"; // Importation du module mysql2
+import withAdminAuth from "./middlewares/withAdminAuth.js"; // Middleware pour l'authentification des admins
+
 const require = createRequire(import.meta.url);
-const MySQLStore = require("express-mysql-session")(session); 
+const MySQLStore = require("express-mysql-session")(session);
 
 import router from "./routes/index.routes.js"; 
 
@@ -17,17 +17,17 @@ const app = express();
 
 const PORT = process.env.PORT || 3000; 
 
-// Middleware pour parser les données JSON et URL-encodées (placer avant les routes)
-app.use(express.json()); // Middleware pour parser le JSON
-app.use(express.urlencoded({ extended: false })); // Middleware pour parser les données URL-encodées
+// Middleware pour parser les données JSON et URL-encodées
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Configuration de CORS
 app.use(
     cors({
-        origin: "http://localhost:5173", 
-        credentials: true, 
-        methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], 
-        allowedHeaders: ["Content-Type"], 
+        origin: "http://localhost:5173",
+        credentials: true,
+        methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type"],
     })
 );
 
@@ -39,31 +39,30 @@ const pool = mysql.createPool({
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     waitForConnections: true,
-    connectionLimit: 10,  // Limite de connexions simultanées
+    connectionLimit: 10,
     queueLimit: 0
 });
 
 // Configuration des sessions
 app.use(
     session({
-        secret: process.env.SECRET_KEY_SESSION,  // Clé secrète pour la session
+        secret: process.env.SECRET_KEY_SESSION,
         resave: false,
         saveUninitialized: false,
         cookie: {
-            maxAge: 1000 * 60 * 60 * 24, // Durée de vie de la session : 24 heures
+            maxAge: 1000 * 60 * 60 * 24, // 24 heures
             httpOnly: true,
-            secure: false, // Changez à true en production avec HTTPS
+            secure: false,
         },
         store: new MySQLStore({
-            host: process.env.DB_HOST, // Hôte de la base de données
-            port: process.env.DB_PORT, // Port de la base de données
-            user: process.env.DB_USER, // Utilisateur de la base de données
-            password: process.env.DB_PASS, // Mot de passe de la base de données
-            database: process.env.DB_NAME, // Nom de la base de données
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_NAME,
         }),
     })
 );
-
 
 // Exemple d'authentification (lorsque l'utilisateur se connecte)
 app.post("/login", async (req, res) => {
@@ -76,18 +75,16 @@ app.post("/login", async (req, res) => {
     console.log("Reçu :", req.body);
 
     try {
-        // Construire la requête pour rechercher l'utilisateur par pseudo ou email
         const [[user]] = await pool.promise().query(
             "SELECT * FROM user WHERE (pseudo = ? OR email = ?)",
-            [identifier, identifier] // Utilisation de `identifier` pour pseudo ou email
+            [identifier, identifier]
         );
 
-        // Vérifier si l'utilisateur existe et si le mot de passe correspond
         if (user && user.password === password) {
-            req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email }; // Crée la session
+            req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email, role: user.role };
             return res.json({ message: "Connexion réussie", user: req.session.user });
         }
-
+        
         return res.status(401).json({ message: "Identifiants incorrects" });
     } catch (err) {
         console.error("Erreur lors de l'authentification :", err);
@@ -95,24 +92,14 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
-
-
-
-
 // Route pour la déconnexion
 app.post("/logout", (req, res) => {
-    // Vérifier si une session existe
     if (req.session.user) {
-        // Détruire la session
         req.session.destroy((err) => {
             if (err) {
                 return res.status(500).json({ message: "Erreur lors de la déconnexion" });
             }
-
-            // Effacer le cookie de session
-            res.clearCookie("connect.sid");  // Utilisez le nom de votre cookie de session (par défaut 'connect.sid')
-
+            res.clearCookie("connect.sid");
             return res.json({ message: "Déconnexion réussie" });
         });
     } else {
@@ -121,36 +108,16 @@ app.post("/logout", (req, res) => {
 });
 
 // Middleware pour servir des fichiers statiques
-app.use("/images", express.static(path.join(process.cwd(), "public/images"))); // Servir les images
-
-// Middleware pour les requêtes entrantes (pour débogage, à supprimer en production)
-app.use(async (req, res, next) => {
-    console.log("user session", req.session.user);
-    try {
-        // Utilisation de `pool.query()` pour interroger la base de données
-        const [rows] = await pool.promise().query("SELECT COUNT(session_id) AS session FROM sessions");
-        console.log("Active sessions:", rows[0].session);  // Affiche le nombre de sessions actives
-        console.log("User session:", req.session.user ? req.session : "No user session");
-        next();
-    } catch (err) {
-        console.error("Error fetching sessions:", err.message);
-        next(); // Continuer même en cas d'erreur
-    }
-});
-
-
-
+app.use("/images", express.static(path.join(process.cwd(), "public/images")));
 
 // Route pour l'inscription d'un utilisateur
 app.post("/signup", async (req, res) => {
     const { pseudo, email, password } = req.body;
 
-    // Vérification des champs
     if (!pseudo || !email || !password) {
         return res.status(400).json({ message: "Tous les champs sont requis" });
     }
 
-    // Vérification si l'email ou le pseudo existe déjà
     try {
         const [[existingUser]] = await pool.promise().query(
             "SELECT * FROM user WHERE email = ? OR pseudo = ?", 
@@ -161,17 +128,13 @@ app.post("/signup", async (req, res) => {
             return res.status(400).json({ message: "Cet email ou pseudo est déjà utilisé" });
         }
 
-        // Hashage du mot de passe
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insertion dans la base de données
         const [result] = await pool.promise().query(
             "INSERT INTO user (pseudo, email, password, status, created_at) VALUES (?, ?, ?, ?, NOW())", 
             [pseudo, email, hashedPassword, 1]
         );
-        
 
-        // Retourner les informations de l'utilisateur créé
         return res.status(201).json({
             message: "Compte créé avec succès",
             user: {
@@ -187,6 +150,12 @@ app.post("/signup", async (req, res) => {
         return res.status(500).json({ message: "Erreur serveur" });
     }
 });
+
+// Route protégée accessible uniquement pour les administrateurs
+app.get("/dashboard", withAdminAuth, (req, res) => {
+    res.json({ message: "Bienvenue sur le tableau de bord administrateur !" });
+});
+
 // Utilisation des routes définies dans index.routes.js
 app.use('/', router); 
 

@@ -1,47 +1,81 @@
-import User from '../models/User.js';
-import bcrypt from 'bcrypt';
+import Auth from '../models/Auth.js'; // Import du modèle Auth
 
-// Fonction pour la connexion de l'utilisateur
-export const loginUser = async (req, res) => {
+// Connexion utilisateur
+const login = async (req, res) => {
     const { identifier, password } = req.body;
 
     if (!identifier || !password) {
-        return res.status(400).json({ message: "Identifiant ou mot de passe manquant" });
+        return res.status(400).json({ message: "Pseudo/Email ou mot de passe manquant" });
     }
 
     try {
-        // Chercher l'utilisateur par pseudo ou email
-        const user = await User.findByIdentifier(identifier);
+        const user = await Auth.findByIdentifier(identifier);
 
-        if (user && await bcrypt.compare(password, user.password)) {
-            // Créer la session pour l'utilisateur
-            req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email };
-            return res.json({ message: "Connexion réussie", user: req.session.user });
-        } else {
-            return res.status(401).json({ message: "Identifiants incorrects" });
+        if (user && await Auth.comparePassword(password, user.password)) {
+            req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email, role: user.role };
+            return res.status(200).json({ message: "Connexion réussie", user: req.session.user });
         }
-    } catch (err) {
-        console.error("Erreur lors de l'authentification :", err);
+
+        return res.status(401).json({ message: "Identifiants incorrects" });
+    } catch (error) {
+        console.error("Erreur lors de la connexion :", error);
         return res.status(500).json({ message: "Erreur serveur" });
     }
 };
 
-// Fonction pour récupérer le profil de l'utilisateur connecté
-export const getUserProfile = (req, res) => {
-    // Si l'utilisateur est authentifié, récupérer ses informations
+
+
+
+// Déconnexion utilisateur
+const logout = (req, res) => {
     if (req.session.user) {
-        return res.json({ user: req.session.user });
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+            }
+            res.clearCookie("connect.sid");
+            return res.status(200).json({ message: "Déconnexion réussie" });
+        });
     } else {
-        return res.status(401).json({ message: "Non autorisé" });
+        return res.status(400).json({ message: "Aucune session active" });
     }
 };
 
-// Fonction pour déconnecter l'utilisateur
-export const logoutUser = (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+// Inscription utilisateur
+const signup = async (req, res) => {
+    const { pseudo, email, password } = req.body;
+
+    if (!pseudo || !email || !password) {
+        return res.status(400).json({ message: "Tous les champs sont requis" });
+    }
+
+    try {
+        const existingUser = await Auth.findByEmailOrPseudo(email, pseudo);
+
+        if (existingUser) {
+            return res.status(400).json({ message: "Cet email ou pseudo est déjà utilisé" });
         }
-        return res.json({ message: "Déconnexion réussie" });
-    });
+
+        const newUser = await Auth.register({ pseudo, email, password });
+
+        return res.status(201).json({
+            message: "Compte créé avec succès",
+            user: {
+                id: newUser.id,
+                pseudo: newUser.pseudo,
+                email: newUser.email,
+                role: newUser.role,
+                status: newUser.status,
+            }
+        });
+    } catch (error) {
+        console.error("Erreur lors de l'inscription :", error.message);
+        return res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+export {
+    login,
+    logout,
+    signup
 };

@@ -1,16 +1,20 @@
-import bcrypt from "bcrypt";
-import User from "../models/Login.js"; // Import du modèle User
+// src/controllers/userController.js
 
-export const loginController = async (req, res) => {
+import bcrypt from "bcrypt";
+import db from "../config/db.js"; // Import de la connexion à la base de données
+
+// Fonction de connexion de l'utilisateur
+const loginController = async (req, res) => {
   const { identifier, password } = req.body;
 
   try {
     // Vérification si l'utilisateur existe par email ou pseudo
-    const user = await User.findOne({
-      where: {
-        [Op.or]: [{ email: identifier }, { pseudo: identifier }],
-      },
-    });
+    const [rows] = await db.promise().query(
+      "SELECT * FROM user WHERE email = ? OR pseudo = ?",
+      [identifier, identifier]
+    );
+
+    const user = rows[0];
 
     if (!user) {
       // Utilisateur non trouvé
@@ -24,7 +28,6 @@ export const loginController = async (req, res) => {
     }
 
     // Retourner les informations utilisateur nécessaires
-    // Ajoutez un cookie de session si votre application utilise un gestionnaire de session
     return res.status(200).json({
       message: "Connexion réussie",
       user: {
@@ -38,4 +41,9 @@ export const loginController = async (req, res) => {
     console.error("Erreur lors de la connexion :", error);
     return res.status(500).json({ message: "Erreur serveur, veuillez réessayer." });
   }
+};
+
+// Exportation des fonctions du contrôleur de manière cohérente
+export {
+  loginController
 };
