@@ -166,12 +166,40 @@ app.post("/signup", async (req, res) => {
     }
 });
 
+// Exemple de mise à jour de l'article dans votre serveur Node.js
+app.put('/article/:id', async (req, res) => {
+    const { id } = req.params;
+    const { title, content, source, underCategory_id, image_url } = req.body;
+
+    // Vérifier que tous les champs requis sont présents
+    if (!title || !content || !underCategory_id) {
+        return res.status(400).json({ message: "Title, content, and underCategory_id are required" });
+    }
+
+    try {
+        const [result] = await pool.promise().query(
+            `UPDATE article 
+             SET title = ?, content = ?, source = ?, underCategory_id = ?, image_url = ? 
+             WHERE id = ?`,
+            [title, content, source, underCategory_id, image_url, id]
+        );
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({ message: 'Article updated successfully' });
+        } else {
+            res.status(404).json({ message: 'Article not found' });
+        }
+    } catch (error) {
+        console.error('Error updating article:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Route protégée accessible uniquement pour les administrateurs
 app.get("/dashboard", withAdminAuth, (req, res) => {
     console.log("Accès à la route /dashboard autorisé, route atteinte avec succès.");
     res.json({ message: "Bienvenue sur le tableau de bord administrateur !" });
 });
-
 
 
 // Utilisation des routes définies dans index.routes.js

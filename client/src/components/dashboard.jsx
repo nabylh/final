@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-const dashboard = () => {
+const Dashboard = () => {
   const [users, setUsers] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [error, setError] = useState("");
-  const [editUser, setEditUser] = useState(null); // État pour gérer l'utilisateur en cours de modification
+  const [editUser, setEditUser] = useState(null);
+  const [editArticle, setEditArticle] = useState(null);
   const [updatedUser, setUpdatedUser] = useState({
     pseudo: "",
     email: "",
@@ -11,8 +13,19 @@ const dashboard = () => {
     role: "",
     status: ""
   });
+  const [updatedArticle, setUpdatedArticle] = useState({
+    title: "",
+    content: "",
+    author: "",
+    publicationDate: "",
+    source: "",
+    underCategory_id: "",
+    undercategory_name: "",
+    category_name: "",
+    image_url: ""
+  });
 
-  // Charger les utilisateurs depuis l'API lors du premier rendu
+  // Charger les utilisateurs depuis l'API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -21,7 +34,7 @@ const dashboard = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // Pour inclure les cookies de session
+          credentials: "include",
         });
 
         if (!response.ok) {
@@ -39,6 +52,33 @@ const dashboard = () => {
     fetchUsers();
   }, []);
 
+  // Charger les articles depuis l'API
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/article", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de la récupération des articles");
+        }
+
+        const data = await response.json();
+        setArticles(data);
+      } catch (err) {
+        console.error("Erreur lors de la récupération des articles", err);
+        setError("Impossible de récupérer les articles.");
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
   // Fonction pour supprimer un utilisateur
   const handleDeleteUser = async (userId) => {
     try {
@@ -47,18 +87,39 @@ const dashboard = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Inclure les cookies de session
+        credentials: "include",
       });
 
       if (!response.ok) {
         throw new Error("Erreur lors de la suppression de l'utilisateur");
       }
 
-      // Mettre à jour la liste des utilisateurs après la suppression
       setUsers(users.filter((user) => user.id !== userId));
     } catch (err) {
       console.error("Erreur lors de la suppression de l'utilisateur", err);
       setError("Impossible de supprimer l'utilisateur.");
+    }
+  };
+
+  // Fonction pour supprimer un article
+  const handleDeleteArticle = async (articleId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/article/${articleId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de l'article");
+      }
+
+      setArticles(articles.filter((article) => article.id !== articleId));
+    } catch (err) {
+      console.error("Erreur lors de la suppression de l'article", err);
+      setError("Impossible de supprimer l'article.");
     }
   };
 
@@ -68,13 +129,29 @@ const dashboard = () => {
     setUpdatedUser({
       pseudo: user.pseudo,
       email: user.email,
-      password: "", // Initialiser avec une valeur vide pour le mot de passe
+      password: "",
       role: user.role,
       status: user.status,
     });
   };
 
-  // Fonction pour gérer la soumission du formulaire de modification
+  // Fonction pour gérer la modification d'un article
+  const handleEditArticle = (article) => {
+    setEditArticle(article);
+    setUpdatedArticle({
+      title: article.title,
+      content: article.content,
+      author: article.author,
+      publicationDate: article.publicationDate,
+      source: article.source,
+      underCategory_id: article.underCategory_id,
+      undercategory_name: article.undercategory_name,
+      category_name: article.category_name,
+      image_url: article.image_url,
+    });
+  };
+
+  // Fonction pour gérer la soumission du formulaire de modification de l'utilisateur
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     try {
@@ -91,20 +168,47 @@ const dashboard = () => {
         throw new Error("Erreur lors de la mise à jour de l'utilisateur");
       }
 
-      // Mettre à jour la liste des utilisateurs après la modification
       const updatedUsersList = users.map((user) =>
         user.id === editUser.id ? { ...user, ...updatedUser } : user
       );
       setUsers(updatedUsersList);
-      setEditUser(null); // Fermer le formulaire de modification
+      setEditUser(null);
     } catch (err) {
       console.error("Erreur lors de la mise à jour de l'utilisateur", err);
       setError("Impossible de mettre à jour l'utilisateur.");
     }
   };
 
-  // Fonction pour gérer les changements dans le formulaire de modification
-  const handleChange = (e) => {
+  // Fonction pour gérer la soumission du formulaire de modification de l'article
+  const handleUpdateArticle = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:3000/article/${editArticle.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedArticle),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la mise à jour de l'article");
+      }
+
+      const updatedArticlesList = articles.map((article) =>
+        article.id === editArticle.id ? { ...article, ...updatedArticle } : article
+      );
+      setArticles(updatedArticlesList);
+      setEditArticle(null);
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour de l'article", err);
+      setError("Impossible de mettre à jour l'article.");
+    }
+  };
+
+  // Fonction pour gérer les changements dans le formulaire de modification de l'utilisateur
+  const handleChangeUser = (e) => {
     const { name, value } = e.target;
     setUpdatedUser({
       ...updatedUser,
@@ -112,102 +216,241 @@ const dashboard = () => {
     });
   };
 
+  // Fonction pour gérer les changements dans le formulaire de modification de l'article
+  const handleChangeArticle = (e) => {
+    const { name, value } = e.target;
+    setUpdatedArticle({
+      ...updatedArticle,
+      [name]: value,
+    });
+  };
+
   return (
-    <div className="users-container">
-      <h2>Liste des Utilisateurs</h2>
+    <div className="dashboard-container">
+      <h2>Dashboard</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Pseudo</th>
-            <th>Email</th>
-            <th>Rôle</th>
-            <th>Statut</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length > 0 ? (
-            users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.pseudo}</td>
-                <td>{user.email}</td>
-                <td>{user.role}</td>
-                <td>{user.status}</td>
-                <td>
-                  <button onClick={() => handleEditUser(user)}>Modifier</button>
-                  <button onClick={() => handleDeleteUser(user.id)}>Supprimer</button>
-                </td>
-              </tr>
-            ))
-          ) : (
+      <div className="users-container">
+        <h3>Liste des Utilisateurs</h3>
+        <table>
+          <thead>
             <tr>
-              <td colSpan="6">Aucun utilisateur trouvé</td>
+              <th>ID</th>
+              <th>Pseudo</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Statut</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.length > 0 ? (
+              users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>{user.pseudo}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                  <td>{user.status}</td>
+                  <td>
+                    <button onClick={() => handleEditUser(user)}>Modifier</button>
+                    <button onClick={() => handleDeleteUser(user.id)}>Supprimer</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">Aucun utilisateur trouvé</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {editUser && (
-        <div className="edit-form">
-          <h3>Modifier l'utilisateur</h3>
-          <form onSubmit={handleUpdateUser}>
-            <div>
-              <label>Pseudo</label>
-              <input
-                type="text"
-                name="pseudo"
-                value={updatedUser.pseudo}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={updatedUser.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label>Mot de passe</label>
-              <input
-                type="password"
-                name="password"
-                value={updatedUser.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label>Rôle</label>
-              <input
-                type="text"
-                name="role"
-                value={updatedUser.role}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label>Statut</label>
-              <input
-                type="text"
-                name="status"
-                value={updatedUser.status}
-                onChange={handleChange}
-              />
-            </div>
-            <button type="submit">Mettre à jour</button>
-            <button type="button" onClick={() => setEditUser(null)}>Annuler</button>
-          </form>
-        </div>
-      )}
+        {editUser && (
+          <div className="edit-form">
+            <h3>Modifier l'utilisateur</h3>
+            <form onSubmit={handleUpdateUser}>
+              <div>
+                <label>Pseudo</label>
+                <input
+                  type="text"
+                  name="pseudo"
+                  value={updatedUser.pseudo}
+                  onChange={handleChangeUser}
+                />
+              </div>
+              <div>
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={updatedUser.email}
+                  onChange={handleChangeUser}
+                />
+              </div>
+              <div>
+                <label>Mot de passe</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={updatedUser.password}
+                  onChange={handleChangeUser}
+                />
+              </div>
+              <div>
+                <label>Rôle</label>
+                <input
+                  type="text"
+                  name="role"
+                  value={updatedUser.role}
+                  onChange={handleChangeUser}
+                />
+              </div>
+              <div>
+                <label>Statut</label>
+                <input
+                  type="text"
+                  name="status"
+                  value={updatedUser.status}
+                  onChange={handleChangeUser}
+                />
+              </div>
+              <button type="submit">Mettre à jour</button>
+            </form>
+          </div>
+        )}
+      </div>
+
+      <div className="articles-container">
+        <h3>Liste des Articles</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Titre</th>
+              <th>Auteur</th>
+              <th>Date de publication</th>
+              <th>Source</th>
+              <th>Catégorie</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {articles.length > 0 ? (
+              articles.map((article) => (
+                <tr key={article.id}>
+                  <td>{article.id}</td>
+                  <td>{article.title}</td>
+                  <td>{article.author}</td>
+                  <td>{article.publicationDate}</td>
+                  <td>{article.source}</td>
+                  <td>{article.category_name}</td>
+                  <td>
+                    <button onClick={() => handleEditArticle(article)}>Modifier</button>
+                    <button onClick={() => handleDeleteArticle(article.id)}>Supprimer</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">Aucun article trouvé</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
+        {editArticle && (
+          <div className="edit-form">
+            <h3>Modifier l'article</h3>
+            <form onSubmit={handleUpdateArticle}>
+              <div>
+                <label>Titre</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={updatedArticle.title}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>Contenu</label>
+                <textarea
+                  name="content"
+                  value={updatedArticle.content}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>Auteur</label>
+                <input
+                  type="text"
+                  name="author"
+                  value={updatedArticle.author}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>Date de publication</label>
+                <input
+                  type="date"
+                  name="publicationDate"
+                  value={updatedArticle.publicationDate}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>Source</label>
+                <input
+                  type="text"
+                  name="source"
+                  value={updatedArticle.source}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>ID de la sous-catégorie</label>
+                <input
+                  type="text"
+                  name="underCategory_id"
+                  value={updatedArticle.underCategory_id}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>Nom de la sous-catégorie</label>
+                <input
+                  type="text"
+                  name="undercategory_name"
+                  value={updatedArticle.undercategory_name}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>Nom de la catégorie</label>
+                <input
+                  type="text"
+                  name="category_name"
+                  value={updatedArticle.category_name}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <div>
+                <label>URL de l'image</label>
+                <input
+                  type="text"
+                  name="image_url"
+                  value={updatedArticle.image_url}
+                  onChange={handleChangeArticle}
+                />
+              </div>
+              <button type="submit">Mettre à jour</button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default dashboard;
+export default Dashboard;
