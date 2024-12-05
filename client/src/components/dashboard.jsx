@@ -1,123 +1,213 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-// Composant pour le Dashboard de gestion des articles, utilisateurs, commentaires et images
-const Dashboard = () => {
-  const [selectedSection, setSelectedSection] = useState(null);
-  const [articles, setArticles] = useState([]);
+const dashboard = () => {
   const [users, setUsers] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [images, setImages] = useState([]);
+  const [error, setError] = useState("");
+  const [editUser, setEditUser] = useState(null); // État pour gérer l'utilisateur en cours de modification
+  const [updatedUser, setUpdatedUser] = useState({
+    pseudo: "",
+    email: "",
+    password: "",
+    role: "",
+    status: ""
+  });
 
-  const handleSectionChange = (section) => {
-    setSelectedSection((prevSection) => (prevSection === section ? null : section));
-  };
-
+  // Charger les utilisateurs depuis l'API lors du premier rendu
   useEffect(() => {
-    // Fonction générique pour récupérer des données depuis une API
-    const fetchData = async (url, setter) => {
+    const fetchUsers = async () => {
       try {
-        const response = await fetch(url);
+        const response = await fetch("http://localhost:3000/user", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Pour inclure les cookies de session
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de la récupération des utilisateurs");
+        }
+
         const data = await response.json();
-        setter(data);
-      } catch (error) {
-        console.error(`Erreur lors de la récupération des données (${url}):`, error);
+        setUsers(data);
+      } catch (err) {
+        console.error("Erreur lors de la récupération des utilisateurs", err);
+        setError("Impossible de récupérer les utilisateurs.");
       }
     };
 
-    if (selectedSection === 'articles') fetchData('http://localhost:3000/article', setArticles);
-    if (selectedSection === 'users') fetchData('http://localhost:3000/user', setUsers);
-    if (selectedSection === 'comments') fetchData('http://localhost:3000/comment', setComments);
-    if (selectedSection === 'images') fetchData('http://localhost:3000/image', setImages);
-  }, [selectedSection]);
+    fetchUsers();
+  }, []);
+
+  // Fonction pour supprimer un utilisateur
+  const handleDeleteUser = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/user/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Inclure les cookies de session
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de l'utilisateur");
+      }
+
+      // Mettre à jour la liste des utilisateurs après la suppression
+      setUsers(users.filter((user) => user.id !== userId));
+    } catch (err) {
+      console.error("Erreur lors de la suppression de l'utilisateur", err);
+      setError("Impossible de supprimer l'utilisateur.");
+    }
+  };
+
+  // Fonction pour gérer la modification d'un utilisateur
+  const handleEditUser = (user) => {
+    setEditUser(user);
+    setUpdatedUser({
+      pseudo: user.pseudo,
+      email: user.email,
+      password: "", // Initialiser avec une valeur vide pour le mot de passe
+      role: user.role,
+      status: user.status,
+    });
+  };
+
+  // Fonction pour gérer la soumission du formulaire de modification
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:3000/user/${editUser.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la mise à jour de l'utilisateur");
+      }
+
+      // Mettre à jour la liste des utilisateurs après la modification
+      const updatedUsersList = users.map((user) =>
+        user.id === editUser.id ? { ...user, ...updatedUser } : user
+      );
+      setUsers(updatedUsersList);
+      setEditUser(null); // Fermer le formulaire de modification
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour de l'utilisateur", err);
+      setError("Impossible de mettre à jour l'utilisateur.");
+    }
+  };
+
+  // Fonction pour gérer les changements dans le formulaire de modification
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedUser({
+      ...updatedUser,
+      [name]: value,
+    });
+  };
 
   return (
-    <div className='dashboard'>
-      <div>
-        <h2>Gestion des Articles</h2>
-        <button onClick={() => handleSectionChange('articles')}>Gérer les Articles</button>
+    <div className="users-container">
+      <h2>Liste des Utilisateurs</h2>
 
-        {selectedSection === 'articles' && (
-          <div>
-            <button>Ajouter un Article</button>
-            <button>Supprimer un Article</button>
-            <button>Modifier un Article</button>
-            <ul>
-              {articles.map((article) => (
-                <li key={article.id}>{article.title}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div>
-        <h2>Gestion des Utilisateurs</h2>
-        <button onClick={() => handleSectionChange('users')}>Gérer les Utilisateurs</button>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pseudo</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.length > 0 ? (
+            users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.pseudo}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
+                <td>{user.status}</td>
+                <td>
+                  <button onClick={() => handleEditUser(user)}>Modifier</button>
+                  <button onClick={() => handleDeleteUser(user.id)}>Supprimer</button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6">Aucun utilisateur trouvé</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
-        {selectedSection === 'users' && (
-          <div>
-            <button>Ajouter un Utilisateur</button>
-            <button>Supprimer un Utilisateur</button>
-            <button>Modifier un Utilisateur</button>
-            <ul>
-              {users.map((user) => (
-                <li key={user.id}>
-                  <p>{user.pseudo}</p>
-                  <p>{user.email}</p>
-                  <p>{user.role}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      <div>
-        <h2>Gestion des Commentaires</h2>
-        <button onClick={() => handleSectionChange('comments')}>Gérer les Commentaires</button>
-
-        {selectedSection === 'comments' && (
-          <div>
-            <button>Ajouter un Commentaire</button>
-            <button>Supprimer un Commentaire</button>
-            <button>Modifier un Commentaire</button>
-            <ul>
-              {comments.map((comment) => (
-                <li key={comment.id}>
-                  <p><strong>{comment.author}</strong>: {comment.content}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      <div>
-        <h2>Gestion des Images</h2>
-        <button onClick={() => handleSectionChange('images')}>Gérer les Images</button>
-
-        {selectedSection === 'images' && (
-          <div>
-            <button>Ajouter une Image</button>
-            <button>Supprimer une Image</button>
-            <button>Modifier une Image</button>
-            <ul>
-              {images.map((image) => (
-                <li key={image.id}>
-                  <p>{image.title}</p>
-                  <img
-                    src={image.url}
-                    alt={image.title}
-                    style={{ maxWidth: '100px', maxHeight: '100px', marginTop: '10px' }}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      {editUser && (
+        <div className="edit-form">
+          <h3>Modifier l'utilisateur</h3>
+          <form onSubmit={handleUpdateUser}>
+            <div>
+              <label>Pseudo</label>
+              <input
+                type="text"
+                name="pseudo"
+                value={updatedUser.pseudo}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={updatedUser.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label>Mot de passe</label>
+              <input
+                type="password"
+                name="password"
+                value={updatedUser.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label>Rôle</label>
+              <input
+                type="text"
+                name="role"
+                value={updatedUser.role}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label>Statut</label>
+              <input
+                type="text"
+                name="status"
+                value={updatedUser.status}
+                onChange={handleChange}
+              />
+            </div>
+            <button type="submit">Mettre à jour</button>
+            <button type="button" onClick={() => setEditUser(null)}>Annuler</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Dashboard;
+export default dashboard;

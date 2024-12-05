@@ -1,139 +1,129 @@
-// Styles généraux
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', Arial, sans-serif;
-    color: #343a40; // Dark gray
-    line-height: 1.6;
-  }
-  
-  .dashboard {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  
-    h1 {
-      font-size: 2.5rem;
-      text-align: center;
-      margin-bottom: 30px;
-      color: #343a40; // Dark gray
-    }
-  
-    p {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 1.1rem;
-      color: #e9ecef; // Medium gray
-    }
-  
-    // Sections principales
-    > div {
-      margin-bottom: 40px;
-      background-color: #ffffff; // White
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
-      h2 {
-        font-size: 1.8rem;
-        margin-bottom: 15px;
-        color: #007BFF; // Primary color
-      }
-  
-      button {
-        display: inline-block;
-        background-color: #e9ecef; // Medium gray
-        color: #343a40; // Dark gray
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        font-family: 'Roboto', Arial, sans-serif;
-        font-size: 1.25rem;
-        cursor: pointer;
-        margin: 10px 5px;
-        transition: all 0.3s ease-in-out;
-  
-        &:hover {
-          background-color: #f8f9fa; // Light gray
-        }
-      }
-  
-      ul {
-        list-style: none;
-        padding: 0;
-  
-        li {
-          background-color: #e9ecef; // Medium gray
-          margin: 10px 0;
-          padding: 15px;
-          border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s ease-in-out;
-  
-          &:nth-child(even) {
-            background-color: #f8f9fa; // Light gray
-          }
-  
-          &:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          }
-  
-          p {
-            margin: 5px 0;
-            font-size: 1rem;
-            color: #343a40; // Dark gray
-  
-            strong {
-              color: #007BFF; // Primary color
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  // Composants spécifiques
-  .card {
-    background-color: #ffffff; // White
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-  
-    h3 {
-      font-size: 1.5rem;
-      color: #007BFF; // Primary color
-      margin-bottom: 10px;
-    }
-  
-    p {
-      font-size: 1rem;
-      color: #343a40; // Dark gray
-    }
-  }
-  
-  .dashboard {
-    // Espacement général entre les sections
-    > div {
-      margin-top: 80px; // Ajoute de l'espace entre les sections
-    }
-  
-    // Autres styles de la section (inchangés)
-    h2 {
-      font-size: 1.8rem;
-      margin-bottom: 15px; // Ajoute un espacement sous le titre
-      color: #007BFF; // Primary color
-    }
-  
-    button {
-      margin-top: 10px; // Ajoute de l'espace entre les boutons
-    }
-  
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px; // Ajoute un espace entre les boutons et la liste
-    }
-  }
-  
+/* Style principal pour la page de gestion des utilisateurs */
+.users-container {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+}
+
+/* En-tête */
+h2 {
+  margin-bottom: 20px;
+}
+
+/* Table des utilisateurs */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #4CAF50;
+  color: #ffffff;
+}
+
+td {
+  background-color: #f9f9f9;
+}
+
+tr:nth-child(even) td {
+  background-color: #f2f2f2;
+}
+
+tr:hover td {
+  background-color: #f1f1f1;
+}
+
+/* Boutons d'action */
+button {
+  padding: 8px 12px;
+  margin: 4px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+button:active {
+  background-color: #ddd;
+}
+
+/* Styles spécifiques pour les boutons Modifier et Supprimer */
+button:nth-of-type(1) {
+  background-color: #115cce;
+  color: #fff;
+}
+
+button:nth-of-type(1):hover {
+  background-color: #0056b3;
+}
+
+button:nth-of-type(2) {
+  background-color: #FF4B5C;
+  color: #fff;
+}
+
+button:nth-of-type(2):hover {
+  background-color: #c70039;
+}
+
+/* Formulaire de modification */
+.edit-form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.edit-form h3 {
+  margin-bottom: 15px;
+}
+
+.edit-form label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.edit-form input[type="text"],
+.edit-form input[type="email"],
+.edit-form input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.edit-form button {
+  background-color: #4CAF50;
+  color: #fff;
+  border-radius: 4px;
+  padding: 10px 15px;
+}
+
+.edit-form button[type="button"] {
+  background-color: #ccc;
+  margin-left: 10px;
+}
+
+.edit-form button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.edit-form button[type="button"]:hover {
+  background-color: #999;
+}

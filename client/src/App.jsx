@@ -16,7 +16,7 @@ import CV from "./components/CV.jsx";
 import Contact from "./components/Contact.jsx";
 import Login from "./components/login.jsx";
 import Signup from "./components/Signup.jsx";
-import Users from "./components/Users.jsx";
+
 import Dashboard from "./components/dashboard.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
@@ -34,7 +34,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element= {<PrivateRoute><Dashboard /></PrivateRoute>} />
-        <Route path="/user" element={<Users />} />
+        
         <Route path="/article" element={<Articles />} />
         <Route path="/comments/:articleId" element={<CommentsPage />} />
         <Route path="/undercategory" element={<Undercategory />} />

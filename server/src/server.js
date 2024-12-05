@@ -27,7 +27,7 @@ app.use(
     cors({
         origin: "http://localhost:5173",
         credentials: true,
-        methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
         allowedHeaders: ["Content-Type"],
     })
 );
@@ -66,6 +66,7 @@ app.use(
         }),
     })
 );
+
 
 // Exemple d'authentification (lorsque l'utilisateur se connecte)
 app.post("/login", async (req, res) => {
@@ -170,6 +171,8 @@ app.get("/dashboard", withAdminAuth, (req, res) => {
     console.log("Accès à la route /dashboard autorisé, route atteinte avec succès.");
     res.json({ message: "Bienvenue sur le tableau de bord administrateur !" });
 });
+
+
 
 // Utilisation des routes définies dans index.routes.js
 app.use('/', router); 
