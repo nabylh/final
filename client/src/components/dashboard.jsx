@@ -25,6 +25,65 @@ const Dashboard = () => {
     image_url: ""
   });
 
+  const [CreateArticle, setCreateArticle] = useState({
+    title: "",
+    content: "",
+    source: "",
+    created_at: "",
+    underCategory_id: "",
+    undercategory_name: "",
+    category_name: "",
+    image_url: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCreateArticle((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmitCreateArticle = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const response = await fetch("http://localhost:3000/article", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(CreateArticle),
+        credentials: "include",
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erreur lors de la création de l'article");
+      }
+  
+      const newArticle = await response.json();
+  
+      // Ajouter l'article nouvellement créé à la liste locale
+      setArticles((prevArticles) => [...prevArticles, newArticle]);
+  
+      // Réinitialiser le formulaire après soumission
+      setCreateArticle({
+        title: "",
+        content: "",
+        source: "",
+        created_at: "",
+        underCategory_id: "",
+        undercategory_name: "",
+        category_name: "",
+        image_url: "",
+      });
+    } catch (err) {
+      console.error("Erreur lors de la création de l'article :", err);
+      setError("Impossible de créer l'article.");
+    }
+  };
+  
+
   // Charger les utilisateurs depuis l'API
   useEffect(() => {
     const fetchUsers = async () => {
@@ -122,6 +181,7 @@ const Dashboard = () => {
       setError("Impossible de supprimer l'article.");
     }
   };
+
 
   // Fonction pour gérer la modification d'un utilisateur
   const handleEditUser = (user) => {
@@ -322,6 +382,16 @@ const Dashboard = () => {
         )}
       </div>
 
+
+
+
+
+
+
+
+{/* liste des articles  */}
+
+
       <div className="articles-container">
         <h3>Liste des Articles</h3>
         <table>
@@ -359,7 +429,6 @@ const Dashboard = () => {
             )}
           </tbody>
         </table>
-
         {editArticle && (
           <div className="edit-form">
             <h3>Modifier l'article</h3>
@@ -447,10 +516,103 @@ const Dashboard = () => {
               <button type="submit">Mettre à jour</button>
             </form>
           </div>
+          
+        )}
+
+
+
+
+
+{/* ajouter un article formulaire  */}
+
+
+
+
+        {CreateArticle && (
+          <div className="edit-form">
+            <h3>FORMULAIRE POUR AJOUTER UN ARTICLE</h3>
+            <form onSubmit={handleSubmitCreateArticle}>
+              <div>
+                <label>Titre</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={CreateArticle.title}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label>Contenu</label>
+                <textarea
+                  name="content"
+                  value={CreateArticle.content}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label>source</label>
+                <input
+                  type="text"
+                  name="source"
+                  value={CreateArticle.source}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label>Date de publication</label>
+                <input
+                  type="date"
+                  name="created_at"
+                  value={CreateArticle.created_at}
+                  onChange={handleInputChange}
+                />
+              </div>
+          
+              <div>
+                <label>ID de la sous-catégorie</label>
+                <input
+                  type="text"
+                  name="underCategory_id"
+                  value={CreateArticle.underCategory_id}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label>Nom de la sous-catégorie</label>
+                <input
+                  type="text"
+                  name="undercategory_name"
+                  value={CreateArticle.undercategory_name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label>Nom de la catégorie</label>
+                <input
+                  type="text"
+                  name="category_name"
+                  value={CreateArticle.category_name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label>URL de l'image</label>
+                <input
+                  type="text"
+                  name="image_url"
+                  value={CreateArticle.image_url}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <button type="submit">ajouter l'article </button>
+            </form>
+          </div>
+          
         )}
       </div>
     </div>
   );
 };
+
 
 export default Dashboard;

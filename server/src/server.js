@@ -84,7 +84,7 @@ app.post("/login", async (req, res) => {
             [identifier, identifier]
         );
 
-        if (user && user.password === password) {
+        if (user && await bcrypt.compare(password, user.password)) {
             req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email, role: user.role };
             return res.json({ message: "Connexion réussie", user: req.session.user });
         }
@@ -194,6 +194,46 @@ app.put('/article/:id', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+// Route pour créer un nouvel article
+app.post('/article', async (req, res) => {
+    const { title, content, source, underCategory_id, image_url } = req.body;
+
+    // Vérification des champs requis
+    if (!title || !content || !underCategory_id) {
+        return res.status(400).json({ message: "Title, content, and underCategory_id are required" });
+    }
+
+    try {
+        // Requête d'insertion de l'article dans la base de données
+        const [result] = await pool.promise().query(
+            `INSERT INTO article (title, content, source, underCategory_id, image_url, created_at) 
+             VALUES (?, ?, ?, ?, ?, NOW())`,
+            [title, content, source, underCategory_id, image_url]
+        );
+
+        // Si l'insertion est réussie
+        if (result.insertId) {
+            res.status(201).json({ 
+                message: 'Article created successfully',
+                article: {
+                    id: result.insertId,
+                    title,
+                    content,
+                    source,
+                    underCategory_id,
+                    image_url
+                }
+            });
+        } else {
+            res.status(500).json({ message: 'Failed to create the article' });
+        }
+    } catch (error) {
+        console.error('Error creating article:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 
 // Route protégée accessible uniquement pour les administrateurs
 app.get("/dashboard", withAdminAuth, (req, res) => {
