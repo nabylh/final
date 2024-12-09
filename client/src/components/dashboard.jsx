@@ -6,6 +6,9 @@ const Dashboard = () => {
   const [error, setError] = useState("");
   const [editUser, setEditUser] = useState(null);
   const [editArticle, setEditArticle] = useState(null);
+
+
+
   const [updatedUser, setUpdatedUser] = useState({
     pseudo: "",
     email: "",
@@ -16,8 +19,7 @@ const Dashboard = () => {
   const [updatedArticle, setUpdatedArticle] = useState({
     title: "",
     content: "",
-    author: "",
-    publicationDate: "",
+    created_at: "",
     source: "",
     underCategory_id: "",
     undercategory_name: "",
@@ -28,8 +30,8 @@ const Dashboard = () => {
   const [CreateArticle, setCreateArticle] = useState({
     title: "",
     content: "",
-    source: "",
     created_at: "",
+    source: "",
     underCategory_id: "",
     undercategory_name: "",
     category_name: "",
@@ -44,7 +46,38 @@ const Dashboard = () => {
     }));
   };
 
-  const handleSubmitCreateArticle = async (e) => {
+
+
+ // Charger les articles depuis l'API
+ useEffect(() => {
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/article", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération des articles");
+      }
+
+      const data = await response.json();
+      setArticles(data);
+      
+    } catch (err) {
+      console.error("Erreur lors de la récupération des articles", err);
+      setError("Impossible de récupérer les articles.");
+    }
+  };
+
+  fetchArticles();
+}, []);
+
+
+ const handleSubmitCreateArticle = async (e) => {
     e.preventDefault();
   
     try {
@@ -60,13 +93,10 @@ const Dashboard = () => {
       if (!response.ok) {
         throw new Error("Erreur lors de la création de l'article");
       }
-  
+   
       const newArticle = await response.json();
-  
-      // Ajouter l'article nouvellement créé à la liste locale
-      setArticles((prevArticles) => [...prevArticles, newArticle]);
-  
-      // Réinitialiser le formulaire après soumission
+        setArticles((prevArticles) => [...prevArticles, newArticle]);
+
       setCreateArticle({
         title: "",
         content: "",
@@ -77,6 +107,7 @@ const Dashboard = () => {
         category_name: "",
         image_url: "",
       });
+      
     } catch (err) {
       console.error("Erreur lors de la création de l'article :", err);
       setError("Impossible de créer l'article.");
@@ -112,31 +143,7 @@ const Dashboard = () => {
   }, []);
 
   // Charger les articles depuis l'API
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/article", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error("Erreur lors de la récupération des articles");
-        }
-
-        const data = await response.json();
-        setArticles(data);
-      } catch (err) {
-        console.error("Erreur lors de la récupération des articles", err);
-        setError("Impossible de récupérer les articles.");
-      }
-    };
-
-    fetchArticles();
-  }, []);
+  
 
   // Fonction pour supprimer un utilisateur
   const handleDeleteUser = async (userId) => {
@@ -181,6 +188,7 @@ const Dashboard = () => {
       setError("Impossible de supprimer l'article.");
     }
   };
+  
 
 
   // Fonction pour gérer la modification d'un utilisateur
@@ -201,8 +209,7 @@ const Dashboard = () => {
     setUpdatedArticle({
       title: article.title,
       content: article.content,
-      author: article.author,
-      publicationDate: article.publicationDate,
+      created_at: article.created_at,
       source: article.source,
       underCategory_id: article.underCategory_id,
       undercategory_name: article.undercategory_name,
@@ -307,6 +314,7 @@ const Dashboard = () => {
           <tbody>
             {users.length > 0 ? (
               users.map((user) => (
+                
                 <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>{user.pseudo}</td>
@@ -316,8 +324,11 @@ const Dashboard = () => {
                   <td>
                     <button onClick={() => handleEditUser(user)}>Modifier</button>
                     <button onClick={() => handleDeleteUser(user.id)}>Supprimer</button>
+                    
                   </td>
+                  
                 </tr>
+                
               ))
             ) : (
               <tr>
@@ -399,7 +410,7 @@ const Dashboard = () => {
             <tr>
               <th>ID</th>
               <th>Titre</th>
-              <th>Auteur</th>
+              
               <th>Date de publication</th>
               <th>Source</th>
               <th>Catégorie</th>
@@ -407,27 +418,38 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {articles.length > 0 ? (
-              articles.map((article) => (
-                <tr key={article.id}>
-                  <td>{article.id}</td>
-                  <td>{article.title}</td>
-                  <td>{article.author}</td>
-                  <td>{article.publicationDate}</td>
-                  <td>{article.source}</td>
-                  <td>{article.category_name}</td>
-                  <td>
-                    <button onClick={() => handleEditArticle(article)}>Modifier</button>
-                    <button onClick={() => handleDeleteArticle(article.id)}>Supprimer</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7">Aucun article trouvé</td>
-              </tr>
-            )}
-          </tbody>
+
+
+      
+
+
+
+
+
+  {articles.length > 0 ? (
+    articles.map((article) => (
+       // Vérification des articles rendus
+      
+        <tr key={article.id}>
+          <td>{article.id}</td>
+          <td>{article.title}</td>
+          <td>{article.created_at}</td>
+          <td>{article.source}</td>
+          <td>{article.category_name}</td>
+          <td>
+            <button onClick={() => handleEditArticle(article)}>Modifier</button>
+            <button onClick={() => handleDeleteArticle(article.id)}>Supprimer</button>
+          </td>
+        </tr>
+      )
+    )
+  ) : (
+    <tr>
+      <td colSpan="7">Aucun article trouvé</td>
+    </tr>
+  )}
+</tbody>
+
         </table>
         {editArticle && (
           <div className="edit-form">
@@ -451,20 +473,11 @@ const Dashboard = () => {
                 />
               </div>
               <div>
-                <label>Auteur</label>
-                <input
-                  type="text"
-                  name="author"
-                  value={updatedArticle.author}
-                  onChange={handleChangeArticle}
-                />
-              </div>
-              <div>
                 <label>Date de publication</label>
                 <input
                   type="date"
-                  name="publicationDate"
-                  value={updatedArticle.publicationDate}
+                  name="created_at"
+                  value={updatedArticle.created_at}
                   onChange={handleChangeArticle}
                 />
               </div>
@@ -524,91 +537,118 @@ const Dashboard = () => {
 
 
 {/* ajouter un article formulaire  */}
+{/* {CreateArticle && (
+  <div className="edit-form">
+    <h3>FORMULAIRE POUR AJOUTER UN ARTICLE</h3>
+    <form onSubmit={handleSubmitCreateArticle}>
+      {[
+        { label: 'Titre', name: 'title', type: 'text' },
+        { label: 'Contenu', name: 'content', type: 'textarea' },
+        { label: 'Source', name: 'source', type: 'text' },
+        { label: 'Date de publication', name: 'created_at', type: 'date' },
+        { label: 'ID de la sous-catégorie', name: 'underCategory_id', type: 'text' },
+        { label: 'Nom de la sous-catégorie', name: 'undercategory_name', type: 'text' },
+        { label: 'Nom de la catégorie', name: 'category_name', type: 'text' },
+        { label: 'URL de l\'image', name: 'image_url', type: 'text' },
+      ].map((field, index ) => ( console.log(field.name),
+      <div key={`${field.name}-${index}`}>
+    <label>{field.label}</label>
+          {field.type === 'textarea' ? (
+            <textarea
+              name={field.name}
+              value={CreateArticle[field.name]}
+              onChange={handleInputChange}
+            />
+          ) : (
+            <input
+              type={field.type}
+              name={field.name}
+              value={CreateArticle[field.name]}
+              onChange={handleInputChange}
+            />
+          )}
+        </div>
+      ))}
+      <button type="submit">Ajouter l'article</button>
+    </form>
+  </div>
+)} */}
+{CreateArticle && (
+  <div className="edit-form">
+    <h3>Ajouter un Article</h3>
+    <form onSubmit={handleSubmitCreateArticle}>
+      <div>
+        <label>Titre</label>
+        <input
+          type="text"
+          name="title"
+          value={CreateArticle.title}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div>
+        <label>Contenu</label>
+        <textarea
+          name="content"
+          value={CreateArticle.content}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div>
+        <label>Source</label>
+        <input
+          type="text"
+          name="source"
+          value={CreateArticle.source}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>ID de la sous-catégorie</label>
+        <input
+          type="text"
+          name="underCategory_id"
+          value={CreateArticle.underCategory_id}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div>
+        <label>Nom de la sous-catégorie</label>
+        <input
+          type="text"
+          name="undercategory_name"
+          value={CreateArticle.undercategory_name}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div>
+        <label>Nom de la catégorie</label>
+        <input
+          type="text"
+          name="category_name"
+          value={CreateArticle.category_name}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div>
+        <label>URL de l'image</label>
+        <input
+          type="text"
+          name="image_url"
+          value={CreateArticle.image_url}
+          onChange={handleInputChange}
+        />
+      </div>
+      <button type="submit">Ajouter l'article</button>
+    </form>
+  </div>
+)}
 
 
 
 
-        {CreateArticle && (
-          <div className="edit-form">
-            <h3>FORMULAIRE POUR AJOUTER UN ARTICLE</h3>
-            <form onSubmit={handleSubmitCreateArticle}>
-              <div>
-                <label>Titre</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={CreateArticle.title}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label>Contenu</label>
-                <textarea
-                  name="content"
-                  value={CreateArticle.content}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label>source</label>
-                <input
-                  type="text"
-                  name="source"
-                  value={CreateArticle.source}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label>Date de publication</label>
-                <input
-                  type="date"
-                  name="created_at"
-                  value={CreateArticle.created_at}
-                  onChange={handleInputChange}
-                />
-              </div>
-          
-              <div>
-                <label>ID de la sous-catégorie</label>
-                <input
-                  type="text"
-                  name="underCategory_id"
-                  value={CreateArticle.underCategory_id}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label>Nom de la sous-catégorie</label>
-                <input
-                  type="text"
-                  name="undercategory_name"
-                  value={CreateArticle.undercategory_name}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label>Nom de la catégorie</label>
-                <input
-                  type="text"
-                  name="category_name"
-                  value={CreateArticle.category_name}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label>URL de l'image</label>
-                <input
-                  type="text"
-                  name="image_url"
-                  value={CreateArticle.image_url}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <button type="submit">ajouter l'article </button>
-            </form>
-          </div>
-          
-        )}
+
       </div>
     </div>
   );

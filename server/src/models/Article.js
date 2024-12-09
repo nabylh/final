@@ -38,18 +38,29 @@ class Article {
         }
     }
     
-
-    static async create({ title, content, source, undercategory_id, image_url }) {
+    static async create({ title, content, source, undercategory_id, undercategory_name, category_name, image_url, created_at }) {
         try {
             const [result] = await pool.query(
-                "INSERT INTO article (title, content, source, undercategory_id, image_url) VALUES (?, ?, ?, ?, ?)",
-                [title, content, source, undercategory_id, image_url]
+                `INSERT INTO article (title, content, source, undercategory_id, undercategory_name, category_name, image_url, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [title, content, source, undercategory_id, undercategory_name, category_name, image_url, created_at]
             );
-            return { id: result.insertId, title, content, source, undercategory_id, image_url };
+            return {
+                id: result.insertId,
+                title,
+                content,
+                source,
+                undercategory_id,
+                undercategory_name,
+                category_name,
+                image_url,
+                created_at
+            };
         } catch (error) {
             throw new Error(`Error creating article: ${error.message}`);
         }
     }
+    
 
     static async update({ title, content, source, undercategory_id, image_url }, id) {
         try {

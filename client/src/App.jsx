@@ -34,8 +34,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element= {<PrivateRoute><Dashboard /></PrivateRoute>} />
-        
         <Route path="/article" element={<Articles />} />
+        <Route path="/comments" element={<CommentsPage />} />
         <Route path="/comments/:articleId" element={<CommentsPage />} />
         <Route path="/undercategory" element={<Undercategory />} />
         <Route path="/category" element={<Category />} />

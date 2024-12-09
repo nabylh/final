@@ -66,8 +66,25 @@ const getArticlesByCategoryName = async (req, res) => {
 // Créer un nouvel article
 const createArticle = async (req, res) => {
     try {
-        const { title, content, source, undercategory_id } = req.body;
-        const newArticle = await Article.create({ title, content, source, undercategory_id });
+        const {
+            title,
+            content,
+            source,
+            created_at,
+            underCategory_id,
+            undercategory_name,
+            category_name,
+            image_url
+        } = req.body;
+        const newArticle = await Article.create({ 
+            title,
+            content,
+            source,
+            created_at,
+            underCategory_id,
+            undercategory_name,
+            category_name,
+            image_url });
         res.status(201).json(newArticle);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -77,8 +94,23 @@ const createArticle = async (req, res) => {
 // Mettre à jour un article
 const updateArticle = async (req, res) => {
     try {
-        const { title, content, source, undercategory_id } = req.body;
-        const updatedArticle = await Article.update({ title, content, source, undercategory_id }, req.params.id);
+        const {title,
+            content,
+            source,
+            created_at,
+            underCategory_id,
+            undercategory_name,
+            category_name,
+            image_url } = req.body;
+        const updatedArticle = await Article.update({ 
+            title,
+            content,
+            source,
+            created_at,
+            underCategory_id,
+            undercategory_name,
+            category_name,
+            image_url }, req.params.id);
         
         if (!updatedArticle) {
             return res.status(404).json({ message: "Article non trouvé" });

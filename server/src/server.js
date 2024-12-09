@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import { createRequire } from "module"; 
 import mysql from "mysql2"; // Importation du module mysql2
 import withAdminAuth from "./middlewares/withAdminAuth.js"; // Middleware pour l'authentification des admins
-
+import withAuth from "./middlewares/withAuth.js";
 
 const require = createRequire(import.meta.url);
 const MySQLStore = require("express-mysql-session")(session);
@@ -249,3 +249,50 @@ app.use('/', router);
 app.listen(PORT, () =>
     console.log(`Server is running at http://localhost:${PORT}`)
 );
+
+
+// Route pour créer un nouveau commentaire (protégée)
+app.post('/comments', withAuth, async (req, res) => {
+    console.log("Données reçues :", req.body); // Vérifie le contenu reçu
+  
+    try {
+      const { content, article_id } = req.body;
+  
+      // Vérifier que tous les champs requis sont présents
+      if (!content || !article_id) {
+        console.log("Contenu ou article_id manquant");
+        return res.status(400).json({ message: "Contenu et article_id sont requis" });
+      }
+  
+      // Log avant d'exécuter la requête pour voir ce qui est envoyé
+      console.log("Tentative d'insertion du commentaire :", content, article_id, req.session.user.id);
+  
+      // Requête d'insertion dans la base de données
+      const [result] = await pool.promise().query(
+        `INSERT INTO comment (content, article_id, user_id, created_at) 
+         VALUES (?, ?, ?, NOW())`,
+        [content, article_id, req.session.user.id] // Utilisation de l'ID de l'utilisateur de la session
+      );
+  
+      if (result.insertId) {
+        console.log("Commentaire inséré avec succès");
+        res.status(201).json({ 
+          message: 'Commentaire créé avec succès',
+          comment: {
+            id: result.insertId,
+            content,
+            article_id,
+            user_id: req.session.user.id,
+            created_at: new Date()
+          }
+        });
+      } else {
+        console.log("Échec de l'insertion du commentaire");
+        res.status(500).json({ message: 'Échec de la création du commentaire' });
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création du commentaire:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+  

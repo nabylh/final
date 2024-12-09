@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import DOMPurify from 'dompurify';
 const Login = () => {
   const [identifier, setIdentifier] = useState(""); // Le champ unique pour l'email ou pseudo
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Hook de navigation
+  const sanitizeInput = (input) => { return DOMPurify.sanitize(input);};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const sanitizedIdentifier = sanitizeInput(identifier);
+    const sanitizedPassword = sanitizeInput(password);
+
     console.log("Identifier:", identifier); // Affiche l'identifiant
     console.log("Password:", password);
 
@@ -20,8 +25,8 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          identifier, // Envoie le pseudo ou l'email
-          password,
+          identifier: sanitizedIdentifier, 
+          password: sanitizedPassword,
         }),
         credentials: "include", // Envoie les cookies de session
       });

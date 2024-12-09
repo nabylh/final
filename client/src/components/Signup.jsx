@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 
 const Signup = () => {
@@ -13,6 +14,12 @@ const Signup = () => {
     e.preventDefault();
     console.log({ pseudo, email, password });
 
+
+  const sanitizeInput = (input) => DOMPurify.sanitize(input);
+  const sanitizedPseudo = sanitizeInput(pseudo);
+  const sanitizedEmail = sanitizeInput(email);
+  const sanitizedPassword = sanitizeInput(password);
+
     try {
       const response = await fetch("http://localhost:3000/signup", {
         method: "POST",
@@ -20,9 +27,9 @@ const Signup = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pseudo,
-          email,
-          password,
+          pseudo: sanitizedPseudo,
+          email: sanitizedEmail,
+          password: sanitizedPassword,
         }),
         credentials: "include",
       });

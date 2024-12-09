@@ -1,0 +1,93 @@
+#apropos {
+  display: flex;
+  flex-wrap: wrap;
+  background: linear-gradient(#575757, white, white);
+  width: 80%;
+  margin: auto;
+  height: 100vh;
+  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 0.1em rgb(190, 190, 190), 0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+.capture2 {
+  position: absolute;
+  margin: auto;
+  margin-top: 8em;
+  position: relative;
+  width: 40em;
+  margin-bottom: 12em;
+  height: 40em;
+  /* transform: translate(-400px,10px); */
+  border: 4px solid white;
+  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 0.1em rgb(190, 190, 190), 0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+.mainTexte {
+  position: relative;
+  /* transform: translate(260px,0px); */
+  color: white;
+  background: linear-gradient(#575757, grey, #575757);
+  width: 30%;
+  height: auto;
+  margin: auto;
+  /* margin-top: 8rem;  */
+  /* margin-bottom: 5rem; */
+  font-family: "Roboto", system-ui;
+  font-weight: 200;
+  font-style: oblique;
+  font-size: 2rem;
+  padding: 3rem;
+  border: 0.1em white solid;
+  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 0.1em rgb(190, 190, 190), 0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+/* .mainTexte span {
+  width: 100%;
+ margin-left: 10em;
+} */
+.presentation {
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  display: flex;
+}
+
+.presentation h1 {
+  text-align: center;
+  color: black;
+  background-color: white;
+  font-family: "Roboto", system-ui;
+  font-size: 6rem;
+  font-weight: 300;
+  margin: auto;
+  margin-bottom: 3rem;
+  margin-top: 0rem;
+}
+
+.presentation h3 {
+  width: 100%;
+  height: auto;
+  margin: auto;
+  margin-bottom: 3rem;
+  text-align: center;
+  color: black;
+  font-family: "Roboto", system-ui;
+  font-size: 3rem;
+  font-weight: 100;
+}
+
+.logo {
+  justify-content: center;
+  gap: 5em;
+  width: 100%;
+  margin: auto;
+  margin-bottom: 4em;
+  height: auto;
+  display: flex;
+  background-color: #bfbfbf;
+}
+
+.logo img:hover {
+  transform: scale(1.2);
+  transition: 1s;
+}/*# sourceMappingURL=Apropos.css.map */
