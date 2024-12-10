@@ -35,16 +35,16 @@ class Comments {
   }
 
   // Créer un nouveau commentaire
-  static async createComment({content, user_id, article_id }) {
-    console.log("Contenu reçu :", content);
+  static async createComment({ content, user_id, article_id, status = "pending" }) {
     if (!content || content.trim() === "") {
       throw new Error("Le champ 'content' ne peut être vide.");
     }
+  
     try {
       const [result] = await pool.query(
         `INSERT INTO comment (content, user_id, article_id, created_at, status) 
-         VALUES (?, ?, ?, NOW(), 'pending')`,
-        [content, user_id, article_id]
+         VALUES (?, ?, ?, NOW(), ?)`,
+        [content, user_id, article_id, status] // Ajout de status comme paramètre dynamique
       );
   
       return {
@@ -52,11 +52,11 @@ class Comments {
         content,
         user_id,
         article_id,
-        status: "pending",
+        status, // Inclure le statut retourné
         created_at: new Date(),
       };
     } catch (error) {
-      throw new Error(`Error creating comment: ${error.message}`);
+      throw new Error(`Erreur lors de la création du commentaire : ${error.message}`);
     }
   }
   

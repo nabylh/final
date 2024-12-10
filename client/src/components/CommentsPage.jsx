@@ -2,18 +2,26 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
 const CommentsPage = () => {
-  const { articleId } = useParams(); // Extraction de l'ID de l'article depuis l'URL
+  const { articleId } = useParams();
+  console.log("Valeur de articleId récupérée : ", articleId);
+
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState(""); // État pour le nouveau commentaire
   const [submitError, setSubmitError] = useState(null); // Gestion des erreurs pour l'envoi
 
-  
-
   useEffect(() => {
     if (!articleId) {
       console.error("ID de l'article manquant !");
+      return;
+    }
+
+    // Vérifier si les commentaires sont stockés localement
+    const storedComments = localStorage.getItem(`comments-${articleId}`);
+    if (storedComments) {
+      setComments(JSON.parse(storedComments));
+      setLoading(false);
       return;
     }
 
@@ -30,7 +38,9 @@ const CommentsPage = () => {
         }
         const data = await response.json();
         setComments(data);
-        
+
+        // Stocker les commentaires dans localStorage
+        localStorage.setItem(`comments-${articleId}`, JSON.stringify(data));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,7 +52,7 @@ const CommentsPage = () => {
   }, [articleId]);
 
   const handleCommentSubmit = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
+    e.preventDefault();
     setSubmitError(null);
 
     if (!newComment.trim()) {
@@ -53,10 +63,8 @@ const CommentsPage = () => {
     const userInfo = JSON.parse(localStorage.getItem("user"));
     if (!userInfo || !userInfo.id) {
       setSubmitError("Vous devez être connecté pour laisser un commentaire.");
-      navigate("/login"); // Redirection si l'utilisateur n'est pas connecté
       return;
     }
-    
 
     try {
       const response = await fetch("http://localhost:3000/comments", {
@@ -67,23 +75,26 @@ const CommentsPage = () => {
         credentials: "include",
         body: JSON.stringify({
           content: newComment,
-          article_id: articleId, // Lier le commentaire à l'article
-          user_id: userInfo.id, // Utilisation de l'ID de l'utilisateur connecté depuis le localStorage
-          
+          article_id: articleId,
+          user_id: userInfo.id,
         }),
-        
       });
-      
 
-
-      
       if (!response.ok) {
         throw new Error("Erreur lors de l'ajout du commentaire.");
       }
 
       const newCommentData = await response.json();
-      setComments((prevComments) => [...prevComments, newCommentData]); // Mise à jour de la liste des commentaires
-      setNewComment(""); // Réinitialise le formulaire
+      console.log("Données du nouveau commentaire :", newCommentData);
+
+      // Ajouter le nouveau commentaire localement
+      const updatedComments = [...comments, newCommentData.comment];
+      setComments(updatedComments);
+
+      // Mettre à jour localStorage
+      localStorage.setItem(`comments-${articleId}`, JSON.stringify(updatedComments));
+
+      setNewComment(""); // Réinitialiser le formulaire
     } catch (err) {
       setSubmitError(err.message);
     }
@@ -98,24 +109,27 @@ const CommentsPage = () => {
     return <p className="error-message">Erreur : {error}</p>;
   }
 
-  if (comments.length === 0) {
-    return <p className="no-comments">Aucun commentaire pour cet article.</p>;
-  }
-
   // Rendu des commentaires et du formulaire
   return (
     <div className="comments-container">
-      <ul className="comments-list">
-        {comments.map((comment) => (
-          <li key={comment.id} className={`comment-item ${comment.status}`}>
-            <p className="comment-content">{comment.content}</p>
-            <small className="comment-meta">
-              Publié le : {new Date(comment.created_at).toLocaleDateString()}{" "}
-              par {comment.pseudo}
-            </small>
-          </li>
-        ))}
-      </ul>
+      {comments.length === 0 ? (
+        <p className="no-comments">
+          Aucun commentaire pour cet article. Soyez le premier à commenter !
+        </p>
+      ) : (
+        <ul className="comments-list">
+          {comments.map((comment) => (
+            <li key={comment.id} className={`comment-item ${comment.id}`}>
+              <p className="comment-content">{comment.content}</p>
+              <small className="comment-meta">
+                Publié le : {new Date(comment.created_at).toLocaleDateString()}{" "}
+                par {comment.pseudo}
+              </small>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <div className="navigation">
         <Link to="/article" className="back-link">
           Retour à la liste des articles

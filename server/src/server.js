@@ -253,46 +253,87 @@ app.listen(PORT, () =>
 
 // Route pour créer un nouveau commentaire (protégée)
 app.post('/comments', withAuth, async (req, res) => {
-    console.log("Données reçues :", req.body); // Vérifie le contenu reçu
-  
-    try {
-      const { content, article_id } = req.body;
-  
-      // Vérifier que tous les champs requis sont présents
-      if (!content || !article_id) {
-        console.log("Contenu ou article_id manquant");
+    const { content, article_id } = req.body;
+
+    // Vérifier que tous les champs requis sont présents
+    if (!content || !article_id) {
         return res.status(400).json({ message: "Contenu et article_id sont requis" });
-      }
-  
-      // Log avant d'exécuter la requête pour voir ce qui est envoyé
-      console.log("Tentative d'insertion du commentaire :", content, article_id, req.session.user.id);
-  
-      // Requête d'insertion dans la base de données
-      const [result] = await pool.promise().query(
-        `INSERT INTO comment (content, article_id, user_id, created_at) 
-         VALUES (?, ?, ?, NOW())`,
-        [content, article_id, req.session.user.id] // Utilisation de l'ID de l'utilisateur de la session
-      );
-  
-      if (result.insertId) {
-        console.log("Commentaire inséré avec succès");
-        res.status(201).json({ 
-          message: 'Commentaire créé avec succès',
-          comment: {
-            id: result.insertId,
-            content,
-            article_id,
-            user_id: req.session.user.id,
-            created_at: new Date()
-          }
-        });
-      } else {
-        console.log("Échec de l'insertion du commentaire");
-        res.status(500).json({ message: 'Échec de la création du commentaire' });
-      }
-    } catch (error) {
-      console.error('Erreur lors de la création du commentaire:', error);
-      res.status(500).json({ message: 'Erreur serveur' });
     }
-  });
-  
+
+    try {
+        // Vérifiez que l'utilisateur est authentifié et que ses informations sont présentes dans la session
+        const userId = req.session.user.id;
+        if (!userId) {
+            return res.status(401).json({ message: 'Utilisateur non authentifié' });
+        }
+
+        // Valeur par défaut pour le champ status
+        const defaultStatus = 'pending'; // Vous pouvez changer en 'approved' selon vos besoins
+
+        // Requête d'insertion du commentaire dans la base de données
+        const [result] = await pool.promise().query(
+            `INSERT INTO comment (content, article_id, user_id, created_at, status) 
+             VALUES (?, ?, ?, NOW(), ?)`,
+            [content, article_id, userId, defaultStatus] // Ajout du champ status
+        );
+
+        // Si l'insertion est réussie
+        if (result.insertId) {
+            // Récupération du pseudo de l'utilisateur
+            const [user] = await pool.promise().query(
+                `SELECT pseudo FROM user WHERE id = ?`,
+                [userId]
+            );
+
+            if (user.length > 0) {
+                const pseudo = user[0].pseudo;
+
+                res.status(201).json({
+                    message: 'Commentaire créé avec succès',
+                    comment: {
+                        id: result.insertId,
+                        content,
+                        article_id,
+                        user_id: userId,
+                        pseudo, // Ajout du pseudo dans la réponse
+                        created_at: new Date(),
+                        status: defaultStatus // Inclure le champ status dans la réponse
+                    }
+                });
+            } else {
+                res.status(500).json({ message: 'Utilisateur non trouvé' });
+            }
+        } else {
+            res.status(500).json({ message: 'Échec de la création du commentaire' });
+        }
+    } catch (error) {
+        console.error('Erreur lors de la création du commentaire:', error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+});
+
+
+app.get('/comments/:articleId', async (req, res) => {
+    const { articleId } = req.params;
+
+    try {
+        // Requête pour récupérer les commentaires associés à l'article
+        const [comments] = await pool.promise().query(
+            `SELECT c.id, c.content, c.created_at, c.status, u.pseudo 
+             FROM comment c
+             JOIN user u ON c.user_id = u.id
+             WHERE c.article_id = ? 
+             ORDER BY c.created_at DESC`,
+            [articleId]
+        );
+
+        if (comments.length > 0) {
+            res.status(200).json({ comments });
+        } else {
+            res.status(404).json({ message: 'Aucun commentaire trouvé pour cet article' });
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des commentaires:', error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+});

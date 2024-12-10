@@ -13,7 +13,7 @@ const router = express.Router();
 // Routes publiques
 router.get('/', getAllComments); // Obtenir tous les commentaires
 
-router.get('/article/:article_id', getCommentsByArticle); // Obtenir les commentaires d'un article spécifique
+router.get('/article/:articleId', getCommentsByArticle); // Obtenir les commentaires d'un article spécifique
 
 // Routes protégées
 router.post('/comments', withAuth, createComment); // Créer un commentaire (authentifié si nécessaire)
