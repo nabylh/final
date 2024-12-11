@@ -9,12 +9,11 @@ const Articles = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:3000/category"); // URL pour récupérer les catégories
+        const response = await fetch("http://localhost:3000/category");
         if (!response.ok) {
           throw new Error("Erreur lors de la récupération des catégories");
         }
         const data = await response.json();
-       
         setCategories(data);
       } catch (error) {
         console.error("Erreur lors de la récupération des catégories :", error);
@@ -22,27 +21,33 @@ const Articles = () => {
         setLoading(false);
       }
     };
-
     fetchCategories();
   }, []);
 
   if (loading) {
-    return <p>Chargement des catégories...</p>;
+    return <p aria-live="polite">Chargement des catégories...</p>;
   }
 
   return (
-    <section id="articles">
-      {/* Ajout des catégories */}
+    <section id="articles" aria-labelledby="articles-title">
+     
       <div className="categories">
-        
         <ul>
           {categories.map((category) => (
-            <li key={category.id} className="category-item">
-              <h3>{category.name}</h3>
-              <p>{category.description}</p>
+            <li
+              key={category.id}
+              className="category-item"
+              aria-labelledby={`category-${category.id}-name`}
+              aria-describedby={`category-${category.id}-description`}
+            >
+              <h3 id={`category-${category.id}-name`}>{category.name}</h3>
+              <p id={`category-${category.id}-description`}>
+                {category.description}
+              </p>
               <Link
                 to={`/category/${encodeURIComponent(category.name)}/`}
                 className="category-link"
+                aria-label={`Voir les articles dans la catégorie ${category.name}`}
               >
                 Voir les articles
               </Link>
@@ -50,11 +55,7 @@ const Articles = () => {
           ))}
         </ul>
       </div>
-
-      
-      <div className="img">
-        
-      
+      <div className="img" aria-hidden="true">
         <Images />
       </div>
     </section>

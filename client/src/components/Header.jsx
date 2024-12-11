@@ -12,6 +12,7 @@ function Header() {
     const handleLogout = async () => {
       // Supprimer le pseudo du localStorage
       localStorage.removeItem("pseudo");
+      localStorage.clear();
       sessionStorage.clear();
   
       document.cookie.split(';').forEach(cookie => {
@@ -151,7 +152,7 @@ function Header() {
                   <button onClick={handleLogout}>Se déconnecter</button>
                 </>
               ) : (
-                // Si l'utilisateur n'est pas connecté, afficher le lien de connexion
+                
                 <Link to="/login">
                   <svg
                     className="icon-login"

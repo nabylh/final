@@ -50,7 +50,7 @@ const Category = () => {
           
           return (
             <li key={underCategory.id} className={`article-item-${index}`}>
-              {/* Affichage de l'image si l'URL de l'image existe */}
+              
               <h3>{underCategory.name}</h3>
               <p>{underCategory.description}
               <Link to={`/category/${encodeURIComponent(categoryName)}/undercategory/${encodeURIComponent(underCategory.name)}/article`}>

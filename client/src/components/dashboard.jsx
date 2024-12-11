@@ -142,7 +142,7 @@ const Dashboard = () => {
     fetchUsers();
   }, []);
 
-  // Charger les articles depuis l'API
+  
   
 
   // Fonction pour supprimer un utilisateur
@@ -294,7 +294,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h2>Dashboard</h2>
+      
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -534,45 +534,6 @@ const Dashboard = () => {
 
 
 
-
-
-{/* ajouter un article formulaire  */}
-{/* {CreateArticle && (
-  <div className="edit-form">
-    <h3>FORMULAIRE POUR AJOUTER UN ARTICLE</h3>
-    <form onSubmit={handleSubmitCreateArticle}>
-      {[
-        { label: 'Titre', name: 'title', type: 'text' },
-        { label: 'Contenu', name: 'content', type: 'textarea' },
-        { label: 'Source', name: 'source', type: 'text' },
-        { label: 'Date de publication', name: 'created_at', type: 'date' },
-        { label: 'ID de la sous-catégorie', name: 'underCategory_id', type: 'text' },
-        { label: 'Nom de la sous-catégorie', name: 'undercategory_name', type: 'text' },
-        { label: 'Nom de la catégorie', name: 'category_name', type: 'text' },
-        { label: 'URL de l\'image', name: 'image_url', type: 'text' },
-      ].map((field, index ) => ( console.log(field.name),
-      <div key={`${field.name}-${index}`}>
-    <label>{field.label}</label>
-          {field.type === 'textarea' ? (
-            <textarea
-              name={field.name}
-              value={CreateArticle[field.name]}
-              onChange={handleInputChange}
-            />
-          ) : (
-            <input
-              type={field.type}
-              name={field.name}
-              value={CreateArticle[field.name]}
-              onChange={handleInputChange}
-            />
-          )}
-        </div>
-      ))}
-      <button type="submit">Ajouter l'article</button>
-    </form>
-  </div>
-)} */}
 {CreateArticle && (
   <div className="edit-form">
     <h3>Ajouter un Article</h3>
@@ -644,10 +605,6 @@ const Dashboard = () => {
     </form>
   </div>
 )}
-
-
-
-
 
       </div>
     </div>

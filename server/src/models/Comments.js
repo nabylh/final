@@ -24,15 +24,16 @@ class Comments {
         `SELECT c.id, c.content, c.created_at, c.status, u.pseudo
          FROM comment c
          JOIN user u ON c.user_id = u.id
-         WHERE c.id = ?
+         WHERE c.article_id = ?  -- Condition mise à jour pour filtrer par l'article ID
          ORDER BY c.created_at DESC`,
-        [article_id]
+        [article_id]  // Le paramètre est passé à la requête
       );
       return rows;
     } catch (error) {
       throw new Error(`Error fetching comments by article ID: ${error.message}`);
     }
   }
+  
 
   // Créer un nouveau commentaire
   static async createComment({ content, user_id, article_id, status = "pending" }) {

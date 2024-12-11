@@ -16,7 +16,6 @@ import CV from "./components/CV.jsx";
 import Contact from "./components/Contact.jsx";
 import Login from "./components/login.jsx";
 import Signup from "./components/Signup.jsx";
-
 import Dashboard from "./components/dashboard.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 

@@ -8,14 +8,17 @@ const Login = () => {
   const navigate = useNavigate(); // Hook de navigation
   const sanitizeInput = (input) => { return DOMPurify.sanitize(input);};
 
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const sanitizedIdentifier = sanitizeInput(identifier);
     const sanitizedPassword = sanitizeInput(password);
 
-    console.log("Identifier:", identifier); // Affiche l'identifiant
-    console.log("Password:", password);
+    
 
     try {
       // Utilisation de POST au lieu de GET pour l'authentification
@@ -32,7 +35,9 @@ const Login = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+
+      
+      
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -45,7 +50,7 @@ const Login = () => {
       }
 
       if (data.message === "Connexion réussie") {
-        console.log("Utilisateur connecté avec succès", data);
+       
 
         // Stockage du pseudo dans le localStorage ou dans un état global
         localStorage.setItem("pseudo", data.user.pseudo);
@@ -66,6 +71,11 @@ const Login = () => {
       navigate("/signup"); // Redirige vers la page "Créer un compte" en cas d'erreur
     }
   };
+
+
+
+
+
 
   return (
     <div className="login-container">

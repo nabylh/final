@@ -29,7 +29,7 @@ const createComment = async (req, res) => {
 // Récupérer les commentaires d'un article spécifique
 const getCommentsByArticle = async (req, res) => {
     const { articleId } = req.params; // Utilisation de `article_id` pour la récupération
-    console.log("article_id reçu dans les paramètres :", articleId);
+    
     try {
       const comments = await Comments.findByArticleId(articleId); // Appel de la méthode correcte
       res.status(200).json(comments);

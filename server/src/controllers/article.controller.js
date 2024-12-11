@@ -67,24 +67,8 @@ const getArticlesByCategoryName = async (req, res) => {
 const createArticle = async (req, res) => {
     try {
         const {
-            title,
-            content,
-            source,
-            created_at,
-            underCategory_id,
-            undercategory_name,
-            category_name,
-            image_url
-        } = req.body;
-        const newArticle = await Article.create({ 
-            title,
-            content,
-            source,
-            created_at,
-            underCategory_id,
-            undercategory_name,
-            category_name,
-            image_url });
+            title, content,source,created_at,underCategory_id, undercategory_name, category_name, image_url } = req.body;
+        const newArticle = await Article.create({  title, content, source, created_at, underCategory_id, undercategory_name, category_name,image_url });
         res.status(201).json(newArticle);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -94,22 +78,8 @@ const createArticle = async (req, res) => {
 // Mettre à jour un article
 const updateArticle = async (req, res) => {
     try {
-        const {title,
-            content,
-            source,
-            created_at,
-            underCategory_id,
-            undercategory_name,
-            category_name,
-            image_url } = req.body;
-        const updatedArticle = await Article.update({ 
-            title,
-            content,
-            source,
-            created_at,
-            underCategory_id,
-            undercategory_name,
-            category_name,
+        const {title, content, source, created_at, underCategory_id, undercategory_name,category_name, image_url } = req.body;
+        const updatedArticle = await Article.update({ title, content, source, created_at, underCategory_id, undercategory_name,category_name,
             image_url }, req.params.id);
         
         if (!updatedArticle) {

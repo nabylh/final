@@ -49,7 +49,7 @@ const UndercategoryArticles = () => {
       <h1>{undercategoryName}</h1>
       <ul>
   {articles.map((article) => {
-    console.log("Article en cours de traitement :", article); // Ajoutez ce log
+    
     return (
       <li key={article.id}>
         

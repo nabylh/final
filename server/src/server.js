@@ -68,7 +68,34 @@ app.use(
 );
 
 
-// Exemple d'authentification (lorsque l'utilisateur se connecte)
+
+// app.post("/login", async (req, res) => {
+//     const { identifier, password } = req.body;
+
+//     if (!identifier || !password) {
+//         return res.status(400).json({ message: "Pseudo/Email ou mot de passe manquant" });
+//     }
+
+    
+
+//     try {
+//         const [[user]] = await pool.promise().query(
+//             "SELECT * FROM user WHERE (pseudo = ? OR email = ?)",
+//             [identifier, identifier]
+//         );
+
+//         if (user && await bcrypt.compare(password, user.password)) {
+//             req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email, role: user.role };
+//             return res.json({ message: "Connexion réussie", user: req.session.user });
+//         }
+        
+//         return res.status(401).json({ message: "Identifiants incorrects" });
+//     } catch (err) {
+//         console.error("Erreur lors de l'authentification :", err);
+//         return res.status(500).json({ message: "Erreur serveur" });
+//     }
+// });
+
 app.post("/login", async (req, res) => {
     const { identifier, password } = req.body;
 
@@ -76,17 +103,20 @@ app.post("/login", async (req, res) => {
         return res.status(400).json({ message: "Pseudo/Email ou mot de passe manquant" });
     }
 
-    console.log("Reçu :", req.body);
-
     try {
         const [[user]] = await pool.promise().query(
             "SELECT * FROM user WHERE (pseudo = ? OR email = ?)",
             [identifier, identifier]
         );
 
-        if (user && await bcrypt.compare(password, user.password)) {
-            req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email, role: user.role };
-            return res.json({ message: "Connexion réussie", user: req.session.user });
+        if (user) {
+            // Vérifiez si le mot de passe correspond
+            if (await bcrypt.compare(password, user.password)) {
+                req.session.user = { id: user.id, pseudo: user.pseudo, email: user.email, role: user.role };
+                return res.json({ message: "Connexion réussie", user: req.session.user });
+            } else {
+                return res.status(401).json({ message: "Mot de passe incorrect" });
+            }
         }
         
         return res.status(401).json({ message: "Identifiants incorrects" });
@@ -95,6 +125,7 @@ app.post("/login", async (req, res) => {
         return res.status(500).json({ message: "Erreur serveur" });
     }
 });
+
 
 // Route pour la déconnexion
 app.post("/logout", (req, res) => {
@@ -105,14 +136,14 @@ app.post("/logout", (req, res) => {
                 return res.status(500).json({ message: "Erreur serveur lors de la déconnexion" });
             }
 
-            // Effacer le cookie côté client
+            
             res.clearCookie("connect.sid", {
-                path: '/',           // S'assurer que le chemin est bien défini
-                httpOnly: true,      // Garantir que le cookie est inaccessible via JavaScript
-                secure: false,       // Passez à true en HTTPS
+                path: '/',           
+                httpOnly: true,      
+                secure: false,       //  a Passez à true en HTTPS
                 sameSite: 'strict',  // Empêche l'envoi du cookie vers d'autres sites
             });
-            console.log("Session détruite avec succès.");
+          
             return res.status(200).json({ message: "Déconnexion réussie" });
         });
     } else {
@@ -166,7 +197,7 @@ app.post("/signup", async (req, res) => {
     }
 });
 
-// Exemple de mise à jour de l'article dans votre serveur Node.js
+
 app.put('/article/:id', async (req, res) => {
     const { id } = req.params;
     const { title, content, source, underCategory_id, image_url } = req.body;
@@ -195,17 +226,17 @@ app.put('/article/:id', async (req, res) => {
     }
 });
 
-// Route pour créer un nouvel article
+
 app.post('/article', async (req, res) => {
     const { title, content, source, underCategory_id, image_url } = req.body;
 
-    // Vérification des champs requis
+
     if (!title || !content || !underCategory_id) {
         return res.status(400).json({ message: "Title, content, and underCategory_id are required" });
     }
 
     try {
-        // Requête d'insertion de l'article dans la base de données
+       
         const [result] = await pool.promise().query(
             `INSERT INTO article (title, content, source, underCategory_id, image_url, created_at) 
              VALUES (?, ?, ?, ?, ?, NOW())`,
@@ -237,21 +268,21 @@ app.post('/article', async (req, res) => {
 
 // Route protégée accessible uniquement pour les administrateurs
 app.get("/dashboard", withAdminAuth, (req, res) => {
-    console.log("Accès à la route /dashboard autorisé, route atteinte avec succès.");
+   
     res.json({ message: "Bienvenue sur le tableau de bord administrateur !" });
 });
 
 
-// Utilisation des routes définies dans index.routes.js
+
 app.use('/', router); 
 
-// Démarrage du serveur
+
 app.listen(PORT, () =>
     console.log(`Server is running at http://localhost:${PORT}`)
 );
 
 
-// Route pour créer un nouveau commentaire (protégée)
+
 app.post('/comments', withAuth, async (req, res) => {
     const { content, article_id } = req.body;
 
@@ -261,23 +292,23 @@ app.post('/comments', withAuth, async (req, res) => {
     }
 
     try {
-        // Vérifiez que l'utilisateur est authentifié et que ses informations sont présentes dans la session
+    
         const userId = req.session.user.id;
         if (!userId) {
             return res.status(401).json({ message: 'Utilisateur non authentifié' });
         }
 
-        // Valeur par défaut pour le champ status
-        const defaultStatus = 'pending'; // Vous pouvez changer en 'approved' selon vos besoins
+        
+        const defaultStatus = 'pending'; 
 
-        // Requête d'insertion du commentaire dans la base de données
+        
         const [result] = await pool.promise().query(
             `INSERT INTO comment (content, article_id, user_id, created_at, status) 
              VALUES (?, ?, ?, NOW(), ?)`,
-            [content, article_id, userId, defaultStatus] // Ajout du champ status
+            [content, article_id, userId, defaultStatus] 
         );
 
-        // Si l'insertion est réussie
+        
         if (result.insertId) {
             // Récupération du pseudo de l'utilisateur
             const [user] = await pool.promise().query(
@@ -295,9 +326,9 @@ app.post('/comments', withAuth, async (req, res) => {
                         content,
                         article_id,
                         user_id: userId,
-                        pseudo, // Ajout du pseudo dans la réponse
+                        pseudo, 
                         created_at: new Date(),
-                        status: defaultStatus // Inclure le champ status dans la réponse
+                        status: defaultStatus 
                     }
                 });
             } else {
@@ -313,27 +344,148 @@ app.post('/comments', withAuth, async (req, res) => {
 });
 
 
-app.get('/comments/:articleId', async (req, res) => {
-    const { articleId } = req.params;
+
+// app.get('/comments/article/:articleId', async (req, res) => {
+//     const { articleId } = req.params;
+
+//     try {
+//         // Requête pour récupérer les commentaires associés à l'article
+//         const [comments] = await pool.promise().query(
+//             `SELECT c.id, c.content, c.created_at, c.status, u.pseudo 
+//              FROM comment c
+//              JOIN user u ON c.user_id = u.id
+//              WHERE c.article_id = ? 
+//              ORDER BY c.created_at DESC`,
+//             [articleId]
+//         );
+
+//         if (comments.length > 0) {
+//             res.status(200).json({ comments });
+//         } else {
+//             res.status(404).json({ message: 'Aucun commentaire trouvé pour cet article' });
+//         }
+//     } catch (error) {
+//         console.error('Erreur lors de la récupération des commentaires:', error);
+//         res.status(500).json({ message: 'Erreur serveur' });
+//     }
+// });
+
+app.get('/comments', async (req, res) => {
+    try {
+      const [comments] = await pool.promise().query(
+        `SELECT c.id, c.content, c.created_at, c.status, u.pseudo, c.article_id 
+         FROM comment c
+         JOIN user u ON c.user_id = u.id
+         ORDER BY c.created_at DESC`
+      );
+  
+      if (comments.length > 0) {
+        res.status(200).json(comments);
+      } else {
+        res.status(404).json({ message: 'Aucun commentaire trouvé' });
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des commentaires:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+  
+
+
+app.put('/comments/:commentId', withAuth, async (req, res) => {
+    const { commentId } = req.params; // ID du commentaire à modifier
+    const { content } = req.body; // Nouveau contenu du commentaire
+
+
+    if (!req.session || !req.session.user) {
+        return res.status(401).json({ message: "Non autorisé. Veuillez vous connecter." });
+    }
+
+
+    if (!content) {
+        return res.status(400).json({ message: "Le contenu est requis pour modifier un commentaire" });
+    }
+
 
     try {
-        // Requête pour récupérer les commentaires associés à l'article
-        const [comments] = await pool.promise().query(
-            `SELECT c.id, c.content, c.created_at, c.status, u.pseudo 
-             FROM comment c
-             JOIN user u ON c.user_id = u.id
-             WHERE c.article_id = ? 
-             ORDER BY c.created_at DESC`,
-            [articleId]
+        const userId = req.session.user.id; 
+        const userRole = req.session.user.role; 
+
+       
+        const [[existingComment]] = await pool.promise().query(
+            `SELECT user_id FROM comment WHERE id = ?`,
+            [commentId]
         );
 
-        if (comments.length > 0) {
-            res.status(200).json({ comments });
+        if (!existingComment) {
+            return res.status(404).json({ message: "Commentaire non trouvé" });
+        }
+
+
+        if (existingComment.user_id !== userId && userRole !== 'admin') {
+            return res.status(403).json({ message: "Vous n'avez pas l'autorisation de modifier ce commentaire" });
+        }
+
+        // Mise à jour du commentaire
+        const [result] = await pool.promise().query(
+            `UPDATE comment SET content = ?, created_at = NOW() WHERE id = ?`,
+            [content, commentId]
+        );
+
+        if (result.affectedRows > 0) {
+            return res.status(200).json({ message: "Commentaire modifié avec succès" });
         } else {
-            res.status(404).json({ message: 'Aucun commentaire trouvé pour cet article' });
+            return res.status(500).json({ message: "Échec de la modification du commentaire" });
         }
     } catch (error) {
-        console.error('Erreur lors de la récupération des commentaires:', error);
-        res.status(500).json({ message: 'Erreur serveur' });
+        console.error("Erreur lors de la modification du commentaire:", error);
+        return res.status(500).json({ message: "Erreur serveur" });
     }
 });
+
+// Route pour supprimer un commentaire existant
+app.delete('/comments/:commentId', withAuth, async (req, res) => {
+    const { commentId } = req.params; // ID du commentaire à supprimer
+
+    // Vérifier que l'utilisateur est connecté
+    if (!req.session || !req.session.user) {
+        return res.status(401).json({ message: "Non autorisé. Veuillez vous connecter." });
+    }
+
+    try {
+        const userId = req.session.user.id; // ID de l'utilisateur connecté
+        const userRole = req.session.user.role; // Rôle de l'utilisateur connecté
+
+        // Vérifier que le commentaire existe et récupérer son auteur
+        const [[existingComment]] = await pool.promise().query(
+            `SELECT user_id FROM comment WHERE id = ?`,
+            [commentId]
+        );
+
+        if (!existingComment) {
+            return res.status(404).json({ message: "Commentaire non trouvé" });
+        }
+
+       
+        if (existingComment.user_id !== userId && userRole !== 'admin') {
+            return res.status(403).json({ message: "Vous n'avez pas l'autorisation de supprimer ce commentaire" });
+        }
+
+        
+        const [result] = await pool.promise().query(
+            `DELETE FROM comment WHERE id = ?`,
+            [commentId]
+        );
+
+        if (result.affectedRows > 0) {
+            return res.status(200).json({ message: "Commentaire supprimé avec succès" });
+        } else {
+            return res.status(500).json({ message: "Échec de la suppression du commentaire" });
+        }
+    } catch (error) {
+        console.error("Erreur lors de la suppression du commentaire:", error);
+        return res.status(500).json({ message: "Erreur serveur" });
+    }
+});
+
+

@@ -85,7 +85,9 @@ function Contact() {
 
   return (
     <div className="contact__container">
-      <form className="contact__form" onSubmit={handleSubmit}>
+      <form className="contact__form" onSubmit={handleSubmit} aria-labelledby="formTitle">
+        <h2 id="formTitle" className="visually-hidden">Formulaire de contact</h2>
+
         <div className="form__group">
           <label htmlFor="name" className="form__label">
             Nom
@@ -93,13 +95,18 @@ function Contact() {
           <input
             type="text"
             name="name"
+            id="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="Entrez votre nom"
             className="form__input"
+            aria-describedby="nameError"
+            required
           />
           {errors.nameError && (
-            <p className="form__error-message">{errors.nameError}</p>
+            <p id="nameError" className="form__error-message" role="alert">
+              {errors.nameError}
+            </p>
           )}
         </div>
 
@@ -110,13 +117,18 @@ function Contact() {
           <input
             type="email"
             name="email"
+            id="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Entrez votre email"
             className="form__input"
+            aria-describedby="emailError"
+            required
           />
           {errors.emailError && (
-            <p className="form__error-message">{errors.emailError}</p>
+            <p id="emailError" className="form__error-message" role="alert">
+              {errors.emailError}
+            </p>
           )}
         </div>
 
@@ -126,22 +138,29 @@ function Contact() {
           </label>
           <textarea
             name="msg"
+            id="msg"
             value={formData.msg}
             onChange={handleChange}
             placeholder="Votre message ici..."
             className="form__textarea"
+            aria-describedby="msgError"
+            required
           />
           {errors.msgError && (
-            <p className="form__error-message">{errors.msgError}</p>
+            <p id="msgError" className="form__error-message" role="alert">
+              {errors.msgError}
+            </p>
           )}
         </div>
 
         <div className="form__group form__group--submit">
-          <button type="submit" className="form__button">
+          <button type="submit" className="form__button" aria-label="Envoyer le message">
             Envoyer
           </button>
           {sentMessage && (
-            <p className="form__success-message">{sentMessage}</p>
+            <p className="form__success-message" aria-live="polite">
+              {sentMessage}
+            </p>
           )}
         </div>
       </form>

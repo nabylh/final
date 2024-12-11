@@ -7,12 +7,12 @@ import loginRoutes from './login.routes.js';
 import signupRoutes from './signup.routes.js';
 import userRoutes from './user.routes.js';
 import dashboardRoutes from "./dashboard.routes.js";
-import withAdminAuth from '../middlewares/withAdminAuth.js'; // Importation du middleware
+import withAdminAuth from '../middlewares/withAdminAuth.js'; 
 import logoutRoutes from  "./logout.routes.js";
 import CommentsRoutes from './comments.routes.js';
 const router = express.Router();
 
-//  les routes principales de mon blog
+
 router.use('/article', articleRoutes);
 router.use('/category', categoryRoutes);
 router.use('/image', imageRoutes);
@@ -23,7 +23,7 @@ router.use('/user', userRoutes);
 router.use("/logout",logoutRoutes);
 router.use("/comments",CommentsRoutes);
 
-// Application du middleware pour protéger la route /dashboard
+
 router.use('/dashboard', withAdminAuth, dashboardRoutes);
 
 

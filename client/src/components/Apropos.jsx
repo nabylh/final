@@ -1,11 +1,10 @@
 import React from "react";
 
-
 function Apropos() {
   return (
-    <section id="apropos">
-      <article className="mainTexte">
-        <h1>__Welcome to my portfolio!</h1>
+    <section id="apropos" aria-labelledby="apropos-title">
+      <article className="mainTexte" aria-labelledby="main-texte-title">
+        <h1 id="apropos-title">Welcome to my portfolio!</h1>
         <p>
           I’m a junior web developer full stack passionate about coding and
           technology.
@@ -22,42 +21,40 @@ function Apropos() {
       <img
         className="capture2"
         src="/assets/images/capture2.png"
-        alt="capture2"
+        alt="Screenshot of the portfolio interface"
+        role="img"
+        aria-hidden="false"
       />
-      <article className="presentation">
-        <h1>Pour mieux vous accompagner</h1>
+      <article className="presentation" aria-labelledby="presentation-title">
+        <h1 id="presentation-title">Pour mieux vous accompagner</h1>
         <h3>Présentation de mes compétences</h3>
       </article>
-      <article className="logo">
-            <img
-              src="assets/images/LogoJavaScript.png"
-              alt="logo javascript"
-              width="150"
-              height="150"
-            />
-            <img
-              src="/assets/images/LogoSQL.png"
-              alt="logo sql server"
-              width="150"
-              height="150"
-            />
-            <img
-              src="/assets/images/LogoCSS.png"
-              alt="logo css"
-              width="150"
-              height="150"
-            />
-            <img
-              src="/assets/images/LogoNode.png"
-              alt="logo js"
-              width="150"
-              height="150"
-            />
-          </article>
-
-
-
-
+      <article className="logo" aria-label="Logos des technologies maîtrisées">
+        <img
+          src="assets/images/LogoJavaScript.png"
+          alt="Logo de JavaScript"
+          width="150"
+          height="150"
+        />
+        <img
+          src="/assets/images/LogoSQL.png"
+          alt="Logo de SQL Server"
+          width="150"
+          height="150"
+        />
+        <img
+          src="/assets/images/LogoCSS.png"
+          alt="Logo de CSS"
+          width="150"
+          height="150"
+        />
+        <img
+          src="/assets/images/LogoNode.png"
+          alt="Logo de Node.js"
+          width="150"
+          height="150"
+        />
+      </article>
     </section>
   );
 }
