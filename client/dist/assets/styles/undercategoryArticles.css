@@ -1,0 +1,81 @@
+.image-article {
+  width: 30%;
+  display: flex;
+  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 0.1em rgb(190, 190, 190), 0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+.main-undercategoryArticle {
+  font-size: larger;
+  font-family: "roboto";
+  margin: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  width: 70%;
+}
+
+.main-undercategoryArticle ul li {
+  display: flex;
+  margin: auto;
+  height: auto;
+  width: auto;
+  gap: 200px;
+  padding: 10px;
+  align-items: center;
+}
+
+.main-undercategoryArticle ul h2 {
+  display: flex;
+  margin: auto;
+  height: auto;
+  width: 100%;
+}
+
+.main-undercategoryArticle {
+  font-size: larger;
+  font-family: "roboto";
+  margin: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-undercategoryArticle h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  width: 100%;
+  margin-top: 8rem;
+  background-color: black;
+}
+
+.main-undercategoryArticle h3 {
+  font-size: x-large;
+  font-family: "roboto";
+  font-weight: 600;
+}
+
+.main-undercategoryArticle li {
+  display: inline-block;
+}
+
+.main-undercategoryArticle p {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin-top: 0;
+  font-family: "roboto";
+  font-style: italic;
+  font-size: larger;
+  gap: 20px;
+}
+
+.comments-link {
+  font-family: "roboto";
+  color: red;
+  padding: 0;
+  text-decoration: underline;
+  font-size: smaller;
+}/*# sourceMappingURL=undercategoryArticles.css.map */

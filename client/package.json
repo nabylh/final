@@ -4,7 +4,9 @@
   "main": "./src/main.jsx",
   "type": "module",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+     "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
