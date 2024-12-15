@@ -22,7 +22,7 @@ function Portfolio() {
               Voluptate, nam.
             </p>
             <img
-              src="assets/images/laptop.jpg"
+              src="assets/images/laptop.webp"
               alt="laptop"
               width="500"
               height="300"

@@ -18,13 +18,13 @@ function Apropos() {
           <span>Nabil Achouri</span>
         </p>
       </article>
-      <img
+      {/* <img
         className="capture2"
-        src="/assets/images/capture2.png"
+        src="assets/images/capture2.webp"
         alt="Screenshot of the portfolio interface"
         role="img"
         aria-hidden="false"
-      />
+      /> */}
       <article className="presentation" aria-labelledby="presentation-title">
         <h1 id="presentation-title">Pour mieux vous accompagner</h1>
         <h3>Présentation de mes compétences</h3>

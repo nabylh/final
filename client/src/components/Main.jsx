@@ -33,11 +33,11 @@ function Main() {
             </p>
           </article>
 
-          <img
+          {/* <img
             className="capture2"
-            src="/assets/images/capture2.png"
+            src="/assets/images/capture2.webp"
             alt="capture2"
-          />
+          /> */}
 
           <article className="presentation">
             <h1>Pour Mieux vous accompagner</h1>
@@ -91,7 +91,7 @@ function Main() {
               Voluptate, nam.
             </p>
             <img
-              src="assets/images/laptop.jpg"
+              src="assets/images/laptop.webp"
               alt="laptop"
               width="500"
               height="300"
