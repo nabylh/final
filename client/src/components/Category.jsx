@@ -41,7 +41,7 @@ const Category = () => {
   }
 
   return (
-    <div>
+    <section>
       <ul className="main-article">
         <h2>Articles de la catégorie : {categoryName}</h2>
         {underCategories.map((underCategory, index) => {
@@ -66,16 +66,12 @@ const Category = () => {
               )}
              
               </p>
-             
-             
-             
-             
-              
+
             </li>
           );
         })}
       </ul>
-    </div>
+    </section>
   );
 };
 

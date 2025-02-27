@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Categories from "./Articles";
 import Contact from "./Contact";
+import Articles from "./Articles";
 
 
 function Main() {
@@ -107,10 +108,9 @@ function Main() {
 
         <section id="main-articles">
           <Categories/>
-          
-         
         </section>
         <Contact/>
+     
         
      
        

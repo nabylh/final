@@ -85,32 +85,32 @@ main {
 
 /* loading page */
 /* Styles pour la page de chargement */
-#loading-screen {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-color: #000000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
+// #loading-screen {
+//   position: fixed;
+//   width: 100%;
+//   height: 100%;
+//   background-color: #000000;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   z-index: 9999;
+// }
 
-.hidden {
-  display: none;
-}
+// .hidden {
+//   display: none;
+// }
 
-/* Styles pour le contenu principal */
-#content {
-  display: none; /* Caché par défaut jusqu'à ce que le chargement soit terminé */
-}
+// /* Styles pour le contenu principal */
+// #content {
+//   display: none; /* Caché par défaut jusqu'à ce que le chargement soit terminé */
+// }
 
-#loading-screen {
-  svg {
-    width: 10%;
+// #loading-screen {
+//   svg {
+//     width: 10%;
     
-  }
-}
+//   }
+// }
 
 
 
@@ -626,17 +626,40 @@ justify-content: center;
 
 
 
-/*les medias Queries*/
+// responsive
 
 
 @media only screen and (max-width: 600px) {
   /* version mobile */
-  body {
+  main body {
     width: 100%;
+    height: auto;
     margin: auto;
-    padding: 0;
-    box-sizing: border-box;
   }
+
+  .capture1 {
+    display: none;
+  }
+  main .mainTexte {
+    margin-top: 50px;
+    width: 50%;
+   
+
+  }
+main .presentation  {
+  width: 100%;
+  font-size: smaller;
+  height: auto;
+ margin: auto;
+}
+
+
+main .presentation h1 {
+  width: 100%;
+  font-size: medium;
+  margin-top: 50px;
+}
+
 
 
   main #apropos {
@@ -645,43 +668,140 @@ justify-content: center;
     height: auto;
 
   }
-
-
-  .mainTexte {
-    width: 50%;
-    margin-top: 8em;
+  header nav    {
+   margin: auto;
+   width: 100%;
+   display: none;
     
-    
-    font-size: medium;
   }
 
-  .capture1, .capture2 {
-    display: none;
-  }
-.presentation {
+  main .listePortfolio {
+  margin: auto;
+  text-align: center;
+  width: 100%;
   height: auto;
-}
+  
+  }
 
-  .presentation {
-    h1 {
+ 
+
+  main .listePortfolio h2 {
+    
+    width: 100%;
+    height: auto;
+    display: flex;
+  }
+
+  main .text1 {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+  }
+
+  main .text1 p {
+    margin: auto;
+    width: 80%;
+    height: auto; 
+  }
+
+  main .text1 img {
+    margin: auto;
+    width: 70%;
+    height: auto; 
+  }
+
+
+
+
+  main #mycv  {
+    width: 100%;
+    margin: auto;
+    
+  }
+
+
+  main #mycv  a {
+    width: 100%;
+    margin: auto;
+    height: auto;
+    
+  }
+
+  main #mycv  h2 {
+    width: 100%;
+    margin: auto;
+    height: auto;
+    font-size: medium;
+
+    
+  }
+
+
+  main #articles {
+    width: 100%;
+    margin: auto;
+    height: auto;
+    
+  }
+
+  main #articles .categories {
+    width: 100%;
+    margin: auto;
+  }
+
+
+  main #articles img {
+  display: none;
+  }
+
+  main #articles .image-list {
+    display: none;
+    }
+
+
+    main .logo {
       width: 100%;
-      font-size: 3rem;
+      margin: auto;
       height: auto;
+      
     }
-  }
 
-  .presentation {
-    h3 {
-      font-size: 2.5rem;
+    main .logo img{
+      display: none;
+      margin: auto;
+      height: auto;
+      
     }
-  }
-}
 
-.logo {
-  img {
-    width: 5em;
-    height: 5em;
-  }
+
+   main   .category-item {
+    width: 100%;
+    margin: auto;
+   }
+
+
+   main   .contact__container {
+    width: 100%;
+    height: auto;
+    margin: auto;
+   }
+
+   main   .contact__form {
+    width: 50%;
+    margin: auto;
+    margin-top: 50px;
+    height: auto;
+   }
+
+
+   main .main-article {
+    width: 30%;
+    margin: auto;
+   
+    height: auto;
+   }
+
+
 }
 
 
@@ -689,12 +809,20 @@ justify-content: center;
   /* version tablettes */
 
 
-  body {
+  main body {
     width: 100%;
+    margin: auto;
+    height: auto;
   }
 
   .capture1 {
     display: none;
+  }
+  main .mainTexte {
+    margin-top: 50px;
+    width: 50%;
+    height: 30%;
+
   }
 
   main #apropos {
@@ -703,21 +831,146 @@ justify-content: center;
     height: auto;
 
   }
+  header nav    {
+   margin: auto;
+   width: 100%;
+   display: none;
+    
+  }
+
+
+
+  main .listePortfolio {
+  margin: auto;
+  text-align: center;
+  width: 100%;
+  height: auto;
+  }
+
+  main #Portfolio {
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    
+    }
+ 
+
+  main .listePortfolio {
+    
+    width: 100%;
+    height: auto;
+    
+  }
+
+  main .text1 {
+    margin: auto;
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+  }
+
+  main .text1 p {
+    margin: auto;
+    width: 50%;
+    height: auto; 
+  }
+
+  main .text1 img {
+    margin: auto;
+    width: 70%;
+    height: auto; 
+  }
+
+  main #mycv  {
+    width: 100%;
+    margin: auto;
+    
+  }
+
+
+  main #mycv  a {
+    width: 100%;
+    margin: auto;
+    height: auto;
+    
+  }
+
+  main #mycv  h2 {
+    width: 100%;
+    margin: auto;
+    height: auto;
+    font-size: medium;
+
+    
+  }
+
+  
+  
+  main #articles {
+    width: 100%;
+    margin: auto;
+    height: auto;
+    
+  }
+
+  main #main-articles {
+    width: 100%;
+    margin: auto;
+    height: auto;
+    
+  }
+
+  main #articles .categories {
+    width: 100%;
+    margin: auto;
+    height: auto;
+  }
+
+
+  main #articles img {
+  display: none;
+  }
+
+  main #articles .image-list {
+    display: none;
+    }
+
+    main .logo img{
+      width: 15%;
+      margin: auto;
+      height: auto;
+      
+    }
+
+
+   main   .contact__container {
+    width: 100%;
+   }
+
+
+   main   .contact__form {
+    width: 50%;
+    height: 50%;
+    margin: auto;
+
+   }
+
+
+
+   main  .underCategory-image  {
+
+    display: none;
+    
+  }
+
 
 
   #apropos{
     justify-content: center;
     margin: auto;
-  }
-  .mainTexte {
-    display: inline-block;
-    transform: none;
     
-    width: 50%;
-    margin-top: 20rem;
-    margin-bottom: 13rem;
-    font-size: 2rem;
   }
+
 
 
 
@@ -735,6 +988,13 @@ justify-content: center;
     }
   }
 
+
+
+  main #articles .categories {
+    width: 100%;
+    margin: auto;
+    height: auto;
+  }
   
 
     }
@@ -742,13 +1002,32 @@ justify-content: center;
 
 
 @media only screen and (min-width: 1080px) {
-  /* version desktop */
+
+/* version desktop */
+
+
+
+
 
   main #apropos {
     margin: auto;
     width: 100%;
     height: auto;
 
+  }
+
+  main #mycv {
+    width: 100%;
+  }
+
+  main #articles {
+    width: 100%;
+  }
+
+
+
+  main .contact__container {
+    width: 100%;
   }
 
   
@@ -797,6 +1076,8 @@ justify-content: center;
   }
 
   }
+
+
 
   
 

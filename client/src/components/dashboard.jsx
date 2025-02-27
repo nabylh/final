@@ -7,8 +7,6 @@ const Dashboard = () => {
   const [editUser, setEditUser] = useState(null);
   const [editArticle, setEditArticle] = useState(null);
 
-
-
   const [updatedUser, setUpdatedUser] = useState({
     pseudo: "",
     email: "",
@@ -46,40 +44,36 @@ const Dashboard = () => {
     }));
   };
 
+  // Charger les articles depuis l'API
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/article", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
 
+        if (!response.ok) {
+          throw new Error("Erreur lors de la récupération des articles");
+        }
 
- // Charger les articles depuis l'API
- useEffect(() => {
-  const fetchArticles = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/article", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des articles");
+        const data = await response.json();
+        setArticles(data);
+      } catch (err) {
+        console.error("Erreur lors de la récupération des articles", err);
+        setError("Impossible de récupérer les articles.");
       }
+    };
 
-      const data = await response.json();
-      setArticles(data);
-      
-    } catch (err) {
-      console.error("Erreur lors de la récupération des articles", err);
-      setError("Impossible de récupérer les articles.");
-    }
-  };
+    fetchArticles();
+  }, []);
 
-  fetchArticles();
-}, []);
-
-
- const handleSubmitCreateArticle = async (e) => {
+  const handleSubmitCreateArticle = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch("http://localhost:3000/article", {
         method: "POST",
@@ -89,13 +83,13 @@ const Dashboard = () => {
         body: JSON.stringify(CreateArticle),
         credentials: "include",
       });
-  
+
       if (!response.ok) {
         throw new Error("Erreur lors de la création de l'article");
       }
-   
+
       const newArticle = await response.json();
-        setArticles((prevArticles) => [...prevArticles, newArticle]);
+      setArticles((prevArticles) => [...prevArticles, newArticle]);
 
       setCreateArticle({
         title: "",
@@ -107,13 +101,11 @@ const Dashboard = () => {
         category_name: "",
         image_url: "",
       });
-      
     } catch (err) {
       console.error("Erreur lors de la création de l'article :", err);
       setError("Impossible de créer l'article.");
     }
   };
-  
 
   // Charger les utilisateurs depuis l'API
   useEffect(() => {
@@ -141,9 +133,6 @@ const Dashboard = () => {
 
     fetchUsers();
   }, []);
-
-  
-  
 
   // Fonction pour supprimer un utilisateur
   const handleDeleteUser = async (userId) => {
@@ -188,8 +177,6 @@ const Dashboard = () => {
       setError("Impossible de supprimer l'article.");
     }
   };
-  
-
 
   // Fonction pour gérer la modification d'un utilisateur
   const handleEditUser = (user) => {
@@ -293,12 +280,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      
-
+    <main className="dashboard-container">
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div className="users-container">
+      <section className="users-container">
         <h3>Liste des Utilisateurs</h3>
         <table>
           <thead>
@@ -314,7 +299,6 @@ const Dashboard = () => {
           <tbody>
             {users.length > 0 ? (
               users.map((user) => (
-                
                 <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>{user.pseudo}</td>
@@ -323,12 +307,11 @@ const Dashboard = () => {
                   <td>{user.status}</td>
                   <td>
                     <button onClick={() => handleEditUser(user)}>Modifier</button>
-                    <button onClick={() => handleDeleteUser(user.id)}>Supprimer</button>
-                    
+                    <button onClick={() => handleDeleteUser(user.id)}>
+                      Supprimer
+                    </button>
                   </td>
-                  
                 </tr>
-                
               ))
             ) : (
               <tr>
@@ -339,10 +322,10 @@ const Dashboard = () => {
         </table>
 
         {editUser && (
-          <div className="edit-form">
+          <section className="edit-form">
             <h3>Modifier l'utilisateur</h3>
             <form onSubmit={handleUpdateUser}>
-              <div>
+              <p>
                 <label>Pseudo</label>
                 <input
                   type="text"
@@ -350,8 +333,8 @@ const Dashboard = () => {
                   value={updatedUser.pseudo}
                   onChange={handleChangeUser}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Email</label>
                 <input
                   type="email"
@@ -359,8 +342,8 @@ const Dashboard = () => {
                   value={updatedUser.email}
                   onChange={handleChangeUser}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Mot de passe</label>
                 <input
                   type="password"
@@ -368,8 +351,8 @@ const Dashboard = () => {
                   value={updatedUser.password}
                   onChange={handleChangeUser}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Rôle</label>
                 <input
                   type="text"
@@ -377,8 +360,8 @@ const Dashboard = () => {
                   value={updatedUser.role}
                   onChange={handleChangeUser}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Statut</label>
                 <input
                   type="text"
@@ -386,31 +369,20 @@ const Dashboard = () => {
                   value={updatedUser.status}
                   onChange={handleChangeUser}
                 />
-              </div>
+              </p>
               <button type="submit">Mettre à jour</button>
             </form>
-          </div>
+          </section>
         )}
-      </div>
+      </section>
 
-
-
-
-
-
-
-
-{/* liste des articles  */}
-
-
-      <div className="articles-container">
+      <section className="articles-container">
         <h3>Liste des Articles</h3>
         <table>
           <thead>
             <tr>
               <th>ID</th>
               <th>Titre</th>
-              
               <th>Date de publication</th>
               <th>Source</th>
               <th>Catégorie</th>
@@ -418,44 +390,36 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-
-
-      
-
-
-
-
-
-  {articles.length > 0 ? (
-    articles.map((article) => (
-       // Vérification des articles rendus
-      
-        <tr key={article.id}>
-          <td>{article.id}</td>
-          <td>{article.title}</td>
-          <td>{article.created_at}</td>
-          <td>{article.source}</td>
-          <td>{article.category_name}</td>
-          <td>
-            <button onClick={() => handleEditArticle(article)}>Modifier</button>
-            <button onClick={() => handleDeleteArticle(article.id)}>Supprimer</button>
-          </td>
-        </tr>
-      )
-    )
-  ) : (
-    <tr>
-      <td colSpan="7">Aucun article trouvé</td>
-    </tr>
-  )}
-</tbody>
-
+            {articles.length > 0 ? (
+              articles.map((article) => (
+                <tr key={article.id}>
+                  <td>{article.id}</td>
+                  <td>{article.title}</td>
+                  <td>{article.created_at}</td>
+                  <td>{article.source}</td>
+                  <td>{article.category_name}</td>
+                  <td>
+                    <button onClick={() => handleEditArticle(article)}>
+                      Modifier
+                    </button>
+                    <button onClick={() => handleDeleteArticle(article.id)}>
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">Aucun article trouvé</td>
+              </tr>
+            )}
+          </tbody>
         </table>
         {editArticle && (
-          <div className="edit-form">
+          <section className="edit-form">
             <h3>Modifier l'article</h3>
             <form onSubmit={handleUpdateArticle}>
-              <div>
+              <p>
                 <label>Titre</label>
                 <input
                   type="text"
@@ -463,16 +427,16 @@ const Dashboard = () => {
                   value={updatedArticle.title}
                   onChange={handleChangeArticle}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Contenu</label>
                 <textarea
                   name="content"
                   value={updatedArticle.content}
                   onChange={handleChangeArticle}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Date de publication</label>
                 <input
                   type="date"
@@ -480,8 +444,8 @@ const Dashboard = () => {
                   value={updatedArticle.created_at}
                   onChange={handleChangeArticle}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Source</label>
                 <input
                   type="text"
@@ -489,8 +453,8 @@ const Dashboard = () => {
                   value={updatedArticle.source}
                   onChange={handleChangeArticle}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>ID de la sous-catégorie</label>
                 <input
                   type="text"
@@ -498,8 +462,8 @@ const Dashboard = () => {
                   value={updatedArticle.underCategory_id}
                   onChange={handleChangeArticle}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Nom de la sous-catégorie</label>
                 <input
                   type="text"
@@ -507,8 +471,8 @@ const Dashboard = () => {
                   value={updatedArticle.undercategory_name}
                   onChange={handleChangeArticle}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>Nom de la catégorie</label>
                 <input
                   type="text"
@@ -516,8 +480,8 @@ const Dashboard = () => {
                   value={updatedArticle.category_name}
                   onChange={handleChangeArticle}
                 />
-              </div>
-              <div>
+              </p>
+              <p>
                 <label>URL de l'image</label>
                 <input
                   type="text"
@@ -525,91 +489,85 @@ const Dashboard = () => {
                   value={updatedArticle.image_url}
                   onChange={handleChangeArticle}
                 />
-              </div>
+              </p>
               <button type="submit">Mettre à jour</button>
             </form>
-          </div>
-          
+          </section>
         )}
 
-
-
-{CreateArticle && (
-  <div className="edit-form">
-    <h3>Ajouter un Article</h3>
-    <form onSubmit={handleSubmitCreateArticle}>
-      <div>
-        <label>Titre</label>
-        <input
-          type="text"
-          name="title"
-          value={CreateArticle.title}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Contenu</label>
-        <textarea
-          name="content"
-          value={CreateArticle.content}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Source</label>
-        <input
-          type="text"
-          name="source"
-          value={CreateArticle.source}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div>
-        <label>ID de la sous-catégorie</label>
-        <input
-          type="text"
-          name="underCategory_id"
-          value={CreateArticle.underCategory_id}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Nom de la sous-catégorie</label>
-        <input
-          type="text"
-          name="undercategory_name"
-          value={CreateArticle.undercategory_name}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Nom de la catégorie</label>
-        <input
-          type="text"
-          name="category_name"
-          value={CreateArticle.category_name}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>URL de l'image</label>
-        <input
-          type="text"
-          name="image_url"
-          value={CreateArticle.image_url}
-          onChange={handleInputChange}
-        />
-      </div>
-      <button type="submit">Ajouter l'article</button>
-    </form>
-  </div>
-)}
-
-      </div>
-    </div>
+        {CreateArticle && (
+          <section className="edit-form">
+            <h3>Ajouter un Article</h3>
+            <form onSubmit={handleSubmitCreateArticle}>
+              <p>
+                <label>Titre</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={CreateArticle.title}
+                  onChange={handleInputChange}
+                />
+              </p>
+              <p>
+                <label>Contenu</label>
+                <textarea
+                  name="content"
+                  value={CreateArticle.content}
+                  onChange={handleInputChange}
+                />
+              </p>
+              <p>
+                <label>Source</label>
+                <input
+                  type="text"
+                  name="source"
+                  value={CreateArticle.source}
+                  onChange={handleInputChange}
+                />
+              </p>
+              <p>
+                <label>ID de la sous-catégorie</label>
+                <input
+                  type="text"
+                  name="underCategory_id"
+                  value={CreateArticle.underCategory_id}
+                  onChange={handleInputChange}
+                />
+              </p>
+              <p>
+                <label>Nom de la sous-catégorie</label>
+                <input
+                  type="text"
+                  name="undercategory_name"
+                  value={CreateArticle.undercategory_name}
+                  onChange={handleInputChange}
+                />
+              </p>
+              <p>
+                <label>Nom de la catégorie</label>
+                <input
+                  type="text"
+                  name="category_name"
+                  value={CreateArticle.category_name}
+                  onChange={handleInputChange}
+                />
+              </p>
+              <p>
+                <label>URL de l'image</label>
+                <input
+                  type="text"
+                  name="image_url"
+                  value={CreateArticle.image_url}
+                  onChange={handleInputChange}
+                />
+              </p>
+              <button type="submit">Ajouter l'article</button>
+            </form>
+          </section>
+        )}
+      </section>
+    </main>
   );
 };
-
 
 export default Dashboard;

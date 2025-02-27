@@ -1,0 +1,18 @@
+// _mixins.scss
+@mixin flex($direction: row, $justify: center, $align: center) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+  }
+  
+  @mixin box-shadow-default {
+    box-shadow: $box-shadow-default;
+  }
+  
+  @mixin font-style($weight: 300, $style: normal) {
+    font-family: $font-roboto;
+    font-weight: $weight;
+    font-style: $style;
+  }
+  

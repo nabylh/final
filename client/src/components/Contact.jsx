@@ -84,11 +84,11 @@ function Contact() {
   };
 
   return (
-    <div className="contact__container">
+    <section className="contact__container">
       <form className="contact__form" onSubmit={handleSubmit} aria-labelledby="formTitle">
         <h2 id="formTitle" className="visually-hidden">Formulaire de contact</h2>
 
-        <div className="form__group">
+        <form className="form__group">
           <label htmlFor="name" className="form__label">
             Nom
           </label>
@@ -108,9 +108,9 @@ function Contact() {
               {errors.nameError}
             </p>
           )}
-        </div>
+        </form>
 
-        <div className="form__group">
+        <form className="form__group">
           <label htmlFor="email" className="form__label">
             E-Mail
           </label>
@@ -130,9 +130,9 @@ function Contact() {
               {errors.emailError}
             </p>
           )}
-        </div>
+        </form>
 
-        <div className="form__group">
+        <form className="form__group">
           <label htmlFor="msg" className="form__label">
             Message
           </label>
@@ -151,9 +151,9 @@ function Contact() {
               {errors.msgError}
             </p>
           )}
-        </div>
+        </form>
 
-        <div className="form__group form__group--submit">
+        <form className="form__group form__group--submit">
           <button type="submit" className="form__button" aria-label="Envoyer le message">
             Envoyer
           </button>
@@ -162,9 +162,9 @@ function Contact() {
               {sentMessage}
             </p>
           )}
-        </div>
+        </form>
       </form>
-    </div>
+    </section>
   );
 }
 

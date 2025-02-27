@@ -113,7 +113,7 @@ const CommentsPage = () => {
   if (error) return <p className="error-message" role="alert">Erreur : {error}</p>;
 
   return (
-    <div className="comments-container" role="region" aria-labelledby="comments-heading">
+    <section className="comments-container" role="region" aria-labelledby="comments-heading">
       <h2 id="comments-heading">Commentaires</h2>
 
       {comments.length === 0 ? (
@@ -137,7 +137,7 @@ const CommentsPage = () => {
               </small>
 
               {user && user.role === "admin" && (
-                <div className="comment-actions">
+                <article className="comment-actions">
                   <button
                     className="delete-button"
                     onClick={() => handleDeleteComment(comment.id)}
@@ -145,20 +145,20 @@ const CommentsPage = () => {
                   >
                     Supprimer
                   </button>
-                </div>
+                </article>
               )}
             </li>
           ))}
         </ul>
       )}
 
-      <div className="navigation">
+      <section className="navigation">
         <Link to="/article" className="back-link" aria-label="Retour à la liste des articles">
           Retour à la liste des articles
         </Link>
-      </div>
+      </section>
 
-      <div className="add-comment-form" aria-labelledby="add-comment-heading">
+      <section className="add-comment-form" aria-labelledby="add-comment-heading">
         <h3 id="add-comment-heading">
           (Veuillez respecter les règles de courtoisie. Tous les commentaires
           sont soumis à la vérification d'un modérateur)
@@ -176,8 +176,8 @@ const CommentsPage = () => {
           ></textarea>
           <button type="submit" aria-label="Publier le commentaire">Publier</button>
         </form>
-      </div>
-    </div>
+      </section>
+    </section>
   );
 };
 

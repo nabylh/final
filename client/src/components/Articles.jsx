@@ -21,6 +21,8 @@ const Articles = () => {
         setLoading(false);
       }
     };
+
+    
     fetchCategories();
   }, []);
 
@@ -29,9 +31,9 @@ const Articles = () => {
   }
 
   return (
-    <section id="articles" aria-labelledby="articles-title">
+    <article id="articles" aria-labelledby="articles-title">
      
-      <div className="categories">
+      <section className="categories">
         <ul>
           {categories.map((category) => (
             <li
@@ -54,11 +56,11 @@ const Articles = () => {
             </li>
           ))}
         </ul>
-      </div>
-      <div className="img" aria-hidden="true">
+      </section>
+      <figure className="img" aria-hidden="true">
         <Images />
-      </div>
-    </section>
+      </figure>
+    </article>
   );
 };
 
